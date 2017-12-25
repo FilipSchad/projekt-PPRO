@@ -1,19 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-
-	<title>{ifset title}{include title|stripHtml} | {/ifset}Nette Web</title>
+    <meta charset="utf-8">
+    <title>Czech futsal championship</title>
+    <link rel="stylesheet" href="{$basePath}/css/style.css">
+    <link rel="stylesheet" href="{$basePath}/css/jquery-ui.min.css">
+    <link rel="shortcut icon" href="{$basePath}/favicon.ico">
+    <meta name="viewport" content="width=device-width">
+    {block head}{/block}
 </head>
-
 <body>
-	<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
+    <div id="container">
+    {if count($flashes) > 0}
+        <div id="flashes">
+            <div class="text">
+                <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">
+                    {$flash->message}
+                </div>
+            </div>
+        </div>
+    {/if}
 
-	{include content}
+    <div id="header">
+        <div class="center">
+            <div id="header_content">					
+                <div id="logo">
+                    <a n:href="Homepage:default" title="Czech futsal championship"><img src="{$basePath}/img/logo.png" border="0" alt="Czech futsal championship" /></a>
+                </div>
+                <div id="back">
+                    <a n:href="Homepage:default" title="Zpět na úvodní stránku">Zpět na úvodní stránku</a>
+                </div>
+                <nav id="menu" class="dropdownmenu">
+                    <ul>
+                        <li><a n:href="Homepage:default">Registrace</a></li>
+                        <li><a n:href="Playground:default">Sportoviště</a></li>  
+                        <li><a n:href="Rules:default">Pravidla</a></li>
+                        <li>
+                            <a>Sezóna</a>
+                            <ul id="submenu">
+                                <li>
+                                <a href="?page=rules">2018/2019</a>
+                                <li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a>Týmy</a>
+                        </li>                              
+                        <li><a n:href="Contact:default">Kontakt</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div> 
+    </div>
 
-	{block scripts}
-	<script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
-	{/block}
+    <div id="content">
+        {include content}
+    </div>
+    
+    <div id="footer">
+        <div class="center">	
+            <div id="content_footer">        
+                <div id="control_footer">
+                    AdminLogin
+                </div>
+                <div id="copyright">
+                    &copy; 2017 | Filip Schad
+                </div>
+                <div id="logo_footer">
+                    <a n:href="Homepage:default" title="Soukromá futsalová liga"><img src="{$basePath}/img/logo_footer.png" border="0" height="60px" alt="Soukromá futsalová liga" /></a>
+                </div>
+            </div>        
+        </div>    
+    </div>
+    </div>
+
+   {block scripts}
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="//nette.github.io/resources/js/netteForms.min.js"></script>
+        <script>
+            $( function() {
+                $( "#tabs" ).tabs();
+            } );
+        </script>
+    {/block}
 </body>
 </html>
