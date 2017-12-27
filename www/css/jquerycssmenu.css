@@ -1,0 +1,88 @@
+#myjquerymenu{
+        z-index: 1000 !important;
+	border: 0px solid black;
+	padding-left:15px;
+	float:left;
+	margin:0;
+	padding:0;
+	font-family:Arial, Helvetica, sans-serif;	
+}
+
+#myjquerymenu ul{
+	float:left;
+	width:1000px;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	z-index: 1000 !important;
+        background: #0972a5;
+}
+
+#myjquerymenu ul li{
+	position: relative;
+	display: inline;
+	float: left;
+	background: #0972a5;
+        z-index: 1000 !important;
+}
+
+#myjquerymenu ul li a{
+	display: block;	
+	font-size:12px;
+	font-weight:bold;
+	color: #fff;
+	text-decoration: none;
+	height:33px;
+	line-height:33px;
+	padding-left:25px;
+	padding-right:25px;
+        z-index: 1000 !important;
+}
+
+#myjquerymenu ul li a:hover{
+	background: #d80100;
+}
+	
+#myjquerymenu ul li ul{
+	position: absolute;
+	left: 0;
+	display: block;
+	visibility: hidden;
+	border-top: 1px solid black;
+	width:auto;
+}
+
+
+#myjquerymenu ul li ul li ul{
+	top: 0;
+	border: solid 0px #fff;
+}
+
+#myjquerymenu ul li ul li a{
+	width: 200px;
+	height: 30px;
+	line-height:30px;
+	background: #0972a5;
+	color: black;
+	margin:0px;
+	padding-left:10px;
+	border: solid 1px #fff;
+	
+}
+
+#myjquerymenu ul li ul li a:hover{
+	background: #d80100;
+	color: black;
+}
+
+.downarrowclass{
+	position: absolute;
+	top: 7px;
+	right: 5px;
+}
+
+.rightarrowclass{
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
