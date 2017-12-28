@@ -752,13 +752,13 @@ margin-left:10px;
 /* ******************************************* */
 
 #players_table{
-	border: solid 1px #F00;
-	width:960px;
+	border: solid 1px #000;
+	width:100%;
 	margin-bottom:20px;
 }
 
 #players_table thead th{
-	border: solid 1px #4971c9;
+	border: solid 1px #0972a5;
 	background: #0972a5;
 }
 

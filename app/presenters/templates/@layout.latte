@@ -6,8 +6,18 @@
     <link rel="stylesheet" href="{$basePath}/css/style.css">
     <link rel="stylesheet" href="{$basePath}/css/jquerycssmenu.css">
     <link rel="stylesheet" href="{$basePath}/css/jquery-ui.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> -->
+    
     <link rel="shortcut icon" href="{$basePath}/favicon.ico">
     <meta name="viewport" content="width=device-width">
+    {block js}
+    <script type="text/javascript" src="{$basePath}/js/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/jquery-ui-1.12.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    
+    <script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/jquerycssmenu.js"></script>
+    {/block}
     {block head}{/block}
 </head>
 <body>
@@ -30,7 +40,20 @@
                 </div>
                 <div id="myjquerymenu">
                     <ul>
-                        <li><a n:href="Homepage:default">Registrace</a></li>
+                        <li>
+                            {if $user->isLoggedIn()}
+                                <a>Admin menu</a>
+                                <ul>
+                                    <li><a n:href="Management:player">Hráči</a></li>
+                                    <li><a n:href="Management:payment">Platby</a></li>
+                                    <li><a n:href="Management:arbiter">Rozhodčí</a></li>
+                                    <li><a n:href="Management:season">Sezóny</a></li>
+                                    <li><a n:href="Management:team">Týmy</a></li>
+                                </ul>
+                            {else}
+                            <a n:href="Homepage:default">Registrace</a>
+                            {/if}
+                        </li>
                         <li><a n:href="Playground:default">Sportoviště</a></li>  
                         <li><a n:href="Rules:default">Pravidla</a></li>
                         <li>
@@ -39,9 +62,9 @@
                             {foreach $seasons as $season}
                                 <li><a>{$season->seasonName}</a>
                                 <ul>
-                                    <li><a href="?page=results&seasonId=0">Výsledky</a></li>
-                                    <li><a href="?page=tables&seasonId=0">Tabulky</a></li>
-                                    <li><a href="?page=schedule&seasonId=0">Rozlosování</a></li>
+                                    <li><a n:href="Season:results $season->seasonId">Výsledky</a></li>
+                                    <li><a n:href="Season:tables $season->seasonId">Tabulky</a></li>
+                                    <li><a n:href="Season:schedule $season->seasonId">Rozlosování</a></li>
                                 </ul>
                                 </li>
                                 
@@ -86,15 +109,8 @@
             </div>        
         </div>    
     </div>
-    </div>
-
    {block scripts}
-   
-        <script src="{$basePath}/js//jquery-1.12.4.js"></script>
-        <script src="{$basePath}/js/jquery-ui-1.12.1.js"></script>
-        <script src="{$basePath}/js/netteForms.js"></script>
-        <script src="{$basePath}/js/jquerycssmenu.js"></script>
-        <script src="{$basePath}/js/tabs.js"></script>
+        <script type="text/javascript" src="{$basePath}/js/tabs.js"></script>
     {/block}
 </body>
 </html>

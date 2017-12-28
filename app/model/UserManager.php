@@ -27,7 +27,7 @@ class UserManager implements Nette\Security\IAuthenticator
     public function authenticate(array $credentials)
     {
         list($username, $password) = $credentials;
-        $row = $this->em->getRepository(\App\Model\Entities\User::getClassName())->findOneBy(array('login' => $username));
+        $row = $this->em->find('\App\Model\Entities\User', $username);
         if (!$row) {
             throw new Nette\Security\AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
 

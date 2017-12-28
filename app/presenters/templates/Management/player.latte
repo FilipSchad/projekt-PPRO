@@ -1,0 +1,64 @@
+{block js}
+{include #parent}
+<script>
+$('#players_table').dataTable({
+        'bLengthChange': false,
+        'iDisplayLength': -1,
+        'bFilter': false,
+        'bInfo': false,
+        'bSort': true,
+        'aaSorting': [[1,'asc'],[0, 'asc']],
+        'bPaginate': false,
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní hráči.'}
+    });
+        </script>
+{/block}
+{block content}
+<!--
+    Content of players' management
+-->
+
+<h3>Hráči</h3>
+<div class="dataTables_wrapper">​
+    <table id="players_table" class="display" cellspacing="0" width="100%"> <!--  class="table js_table" > -->
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Tým</th>
+                <th>Telefon</th>
+                <th>Email</th>
+                <th>Město</th>
+                <th>Adresa</th>
+                <th>PSČ</th>
+                <th>Datum registrace</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+          <td><a href="">jm pr</a></td>
+          <td>tym</td>
+          <td>phone</td>
+          <td><a href="mailto:aa">email</td>
+          <td>city</td>
+          <td>address</td>
+          <td>psc</td>
+          <td>reg date</td>
+          <td><a href="?page=playersMan&deletePId=0&delete=1" onclick="if(!confirm('Chcete opravdu trvale smazat hráče yyyy yyy?')){ return false; };">smazat</a></td>
+          </tr>
+          <tr>
+          <td><a href="">jm pr</a></td>
+          <td>tym</td>
+          <td>phone</td>
+          <td><a href="mailto:aa">email</td>
+          <td>city</td>
+          <td>address</td>
+          <td>psc</td>
+          <td>reg date</td>
+          <td><a href="?page=playersMan&deletePId=0&delete=1" onclick="if(!confirm('Chcete opravdu trvale smazat hráče yyyy yyy?')){ return false; };">smazat</a></td>
+          </tr>
+        </tbody>
+    </table>
+</div>
+{/block}

@@ -17,7 +17,12 @@ class SeasonManager
     
     public function getSeasons()
     {
-        $dao = $this->em->getRepository(\App\Model\Entities\Season::getClassName());
+        $dao = $this->em->getRepository('\App\Model\Entities\Season');
         return $dao->findAll();
+    }
+    
+    public function getSeasonById($id)
+    {
+        return $this->em->find('\App\Model\Entities\Season', $id);
     }
 }

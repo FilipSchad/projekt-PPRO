@@ -1,0 +1,45 @@
+{block js}
+{include #parent}
+<script>
+$(document).ready(function(){
+    /* results table */
+    $('#results_table').dataTable({
+        'bLengthChange': false,
+        'iDisplayLength': -1,
+        'bFilter': false,
+        'bInfo': false,
+        'bSort': true,
+        'aaSorting': [[2, 'asc'],[5,'asc']],
+        'bPaginate': false,
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
+        'oLanguage': {'sEmptyTable': 'Nebyly nalezeny žádné odehrané zápasy v této sezóně.'}
+    });
+</script>
+{/block}
+{block content}
+<!--
+        Template for results of given season
+-->
+
+<h1>{$reqSeason->seasonName}</h1>
+<h3 style="float:left;margin-bottom:0;padding:0;color:#01319d;"><a name="results">Výsledky zápasů sezóny</a></h3> 
+<div class="dataTables_wrapper">​
+                <table id="results_table" class="table js_table" >
+                    <thead>
+                        <tr>
+                            <th>Domácí</th>
+                            <th>Hosté</th>
+                            <th>Kolo</th>
+                            <th>Výsledek</th>
+                            <th>Rozhodčí</th>
+                            <th>Datum zápasu</th>
+                            <th>Sportoviště</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+                <a>Zobrazit všechny výsledky sezóny</a>
+            </div>
+{/block}
