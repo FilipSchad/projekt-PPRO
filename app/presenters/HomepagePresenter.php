@@ -15,19 +15,44 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
      */
     public $EntityManager;
 
-    public function renderDefault()
+    public function beforeRender()
     {
+        parent::beforeRender();
+        $logout = $this->getParameter('logout');
+        if ($logout) {
+            $this->getUser()->logout();
+            $this->flashMessage('Byl jste úspěšně odhlášen.');
+            $this->redirect('Homepage:');
+        }
         $seasonMan = new SeasonManager($this->EntityManager);
         $this->template->seasons = $seasonMan->getSeasons();
+    }
+      
+    protected function createComponentSignInForm()
+    {
+        $form = new UI\Form;
+        $form->addText('name', 'Jméno:')->setRequired('Zadejte prosím login');
+        $form->addPassword('password', 'Heslo:')->setRequired('Zadejte prosím heslo');
+        $form->addSubmit('login', 'Přihlásit');
+        $form->onValidate[] = [$this, 'validateSignInForm'];
+        $form->onSuccess[] = function (UI\Form $form, \stdClass $values) {
+            $this->flashMessage('Byl jste úspěšně přihlášen.');
+            $this->redirect('Homepage:');
+        };
+        return $form;
+    }
+
+    public function validateSignInForm($form)
+    {
+        $values = $form->getValues();
         $user = $this->getUser();
-        $user->logout();
         try
         {
-            $user->login('admin', 'adminaaaa');
+            $user->login($values['name'], $values['password']);
         }
         catch (Nette\Security\AuthenticationException $e)
         {
-             $this->flashMessage('Uživatelské jméno nebo heslo je nesprávné', 'warning');
+            $form->addError('Uživatelské jméno nebo heslo je nesprávné');
         }
     }
     

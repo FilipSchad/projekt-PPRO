@@ -22,7 +22,11 @@
                     <a n:href="Homepage:default" title="Czech futsal championship"><img src="{$basePath}/img/logo.png" border="0" alt="Czech futsal championship" /></a>
                 </div>
                 <div id="back">
-                    AdminLogin
+                    {if $user->isLoggedIn()}
+                        <a n:href="Homepage:default, logout => true">Logout</a>
+                    {else}
+                        <a n:href="Homepage:adminLogin">AdminLogin</a>
+                    {/if}
                 </div>
                 <div id="myjquerymenu">
                     <ul>
@@ -86,9 +90,9 @@
 
    {block scripts}
    
-        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="//nette.github.io/resources/js/netteForms.min.js"></script>
+        <script src="{$basePath}/js//jquery-1.12.4.js"></script>
+        <script src="{$basePath}/js/jquery-ui-1.12.1.js"></script>
+        <script src="{$basePath}/js/netteForms.js"></script>
         <script src="{$basePath}/js/jquerycssmenu.js"></script>
         <script src="{$basePath}/js/tabs.js"></script>
     {/block}

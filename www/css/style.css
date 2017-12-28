@@ -1147,20 +1147,24 @@ legend{
 	margin-bottom:10px;
 }
 
-#loginForm table{
+#frm-signInForm table{
 	font-size:12px;
 }
 
-#loginForm #login{
+#frm-signInForm td, th{
 	border: solid 1px #000;
 	width: 150px;
 }
 
-#loginForm #passw{
-	border: solid 1px #000;
-	width: 150px;
+form ul.error {
+    color: #D8000C;
+    background-color: #FFD2D2;
 }
 
+#center_content form ul.error li {
+    color: #D8000C;
+    background-color: #FFD2D2;
+}
 /************************/
 /* ERROR DIV */
 /*************************/
@@ -1222,22 +1226,6 @@ label.error {
 		background: url('../img/tick_false.gif') right no-repeat;
 }
     
-input[type=text], textarea, select { 
-		width: 302px;
-		float: left;
-		margin-bottom:10px;
-}
-
-input[type=file]{ 
-		float: left;
-		margin-bottom:10px;
-}
-
-textarea { 
-	height: 50px;
-}
-
-
 /*vyskakují okno při najetí myšy*/
 
 
