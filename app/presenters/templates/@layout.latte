@@ -12,24 +12,17 @@
 </head>
 <body>
     <div id="container">
-    {if count($flashes) > 0}
-        <div id="flashes">
-            <div class="text">
-                <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">
-                    {$flash->message}
-                </div>
-            </div>
-        </div>
-    {/if}
+    
 
     <div id="header">
         <div class="center">
-            <div id="header_content">					
+            <div id="header_content">
+                
                 <div id="logo">
                     <a n:href="Homepage:default" title="Czech futsal championship"><img src="{$basePath}/img/logo.png" border="0" alt="Czech futsal championship" /></a>
                 </div>
                 <div id="back">
-                    <a n:href="Homepage:default" title="Zpět na úvodní stránku">Zpět na úvodní stránku</a>
+                    AdminLogin
                 </div>
                 <div id="myjquerymenu">
                     <ul>
@@ -40,10 +33,11 @@
                             <a>Sezóna</a>
                             <ul>
                             {foreach $seasons as $season}
-                                <li><a href="?page=rules">{$season->seasonName}</a>
+                                <li><a>{$season->seasonName}</a>
                                 <ul>
-                                    <li><a>x</a></li>
-                                    <li><a>y</a></li>
+                                    <li><a href="?page=results&seasonId=0">Výsledky</a></li>
+                                    <li><a href="?page=tables&seasonId=0">Tabulky</a></li>
+                                    <li><a href="?page=schedule&seasonId=0">Rozlosování</a></li>
                                 </ul>
                                 </li>
                                 
@@ -57,25 +51,31 @@
                     </ul>
                     <br style="clear: left" />
                 </div>
-                
             </div>
         </div>
     </div> 
     </div>
 
     <div id="content">
-        {include content}
+        <div class="center">
+            <div id="center_content">
+                {if count($flashes) > 0}
+                <div id="flashes">
+                    <div class="text">
+                        <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">
+                            {$flash->message}
+                        </div>
+                    </div>
+                </div>
+                {/if}
+                {include content}
+            </div>
+        </div>
     </div>
     
     <div id="footer">
         <div class="center">	
             <div id="content_footer">        
-                <div id="control_footer">
-                    AdminLogin
-                </div>
-                <div id="copyright">
-                    &copy; 2017 | Filip Schad
-                </div>
                 <div id="logo_footer">
                     <a n:href="Homepage:default" title="Soukromá futsalová liga"><img src="{$basePath}/img/logo_footer.png" border="0" height="60px" alt="Soukromá futsalová liga" /></a>
                 </div>

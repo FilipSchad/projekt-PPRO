@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\BaseEntity;
 
 /**
  * Doctrine entita pro tabulku region.
- * @package App\Model
+ * @package App\Model\Entities
  * @ORM\Entity
+ * @ORM\Table(name="region")
  */
 class Region extends BaseEntity
 {

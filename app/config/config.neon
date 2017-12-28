@@ -13,6 +13,7 @@ session:
 
 services:
 	router: App\RouterFactory::createRouter
+	authenticator: App\Model\UserManager
 
 extensions:
     console: Kdyby\Console\DI\ConsoleExtension

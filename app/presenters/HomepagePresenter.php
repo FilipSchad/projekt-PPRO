@@ -4,6 +4,8 @@ namespace App\Presenters;
 
 use Nette;
 use Nette\Application\UI;
+use Nette\Security\User;
+use App\Model\SeasonManager;
 
 class HomepagePresenter extends Nette\Application\UI\Presenter
 {
@@ -15,8 +17,18 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
 
     public function renderDefault()
     {
-        $dao = $this->EntityManager->getRepository(\App\Model\Season::getClassName());
-        $this->template->seasons = $dao->findAll();
+        $seasonMan = new SeasonManager($this->EntityManager);
+        $this->template->seasons = $seasonMan->getSeasons();
+        $user = $this->getUser();
+        $user->logout();
+        try
+        {
+            $user->login('admin', 'adminaaaa');
+        }
+        catch (Nette\Security\AuthenticationException $e)
+        {
+             $this->flashMessage('Uživatelské jméno nebo heslo je nesprávné', 'warning');
+        }
     }
     
     protected function createComponentRegistrationForm()

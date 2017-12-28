@@ -3,7 +3,7 @@
 namespace App\Presenters;
 
 use Nette;
-
+use App\Model\SeasonManager;
 
 class PlaygroundPresenter extends Nette\Application\UI\Presenter
 {
@@ -15,7 +15,7 @@ class PlaygroundPresenter extends Nette\Application\UI\Presenter
 
     public function renderDefault()
     {
-        $dao = $this->EntityManager->getRepository(\App\Model\Season::getClassName());
-        $this->template->seasons = $dao->findAll();
+        $seasonMan = new SeasonManager($this->EntityManager);
+        $this->template->seasons = $seasonMan->getSeasons();
     }
 }

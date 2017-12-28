@@ -112,7 +112,6 @@ p{
 	min-height:562px;
 	border: solid 0px #000;
 	background: none;
-	/*background: #FFF url(../img/bg_content.gif) repeat-x;*/
 }
 
 #center_content{
@@ -679,15 +678,6 @@ margin-left:10px;
 	border: solid 0px #F00;
 }
 
-.fb-like-box{
-	float:left;
-	margin-top:20px;
-	background: #fff;
-	width:588px;
-	margin-right:16px;
-	border: solid 0px #F00;
-}
-
 #footer{
 	float:left;
 	width:100%;
@@ -702,27 +692,6 @@ margin-left:10px;
 	width:1000px;
 	min-height:178px;
 	border: solid 0px #000;	
-}
-
-#control_footer{
-	float: left;
-	margin-top:30px;
-}
-
-#control_footer a{
-	color: #fff;
-	text-decoration:underline;
-}
-
-#copyright{
-	float:right;
-	margin-top:30px;
-}
-
-#copyright a{
-	margin-top:30px;
-	color: #fff;
-	text-decoration:underline;
 }
 
 #logo_footer{
@@ -1196,12 +1165,36 @@ legend{
 /* ERROR DIV */
 /*************************/
 
-.error_div {
-    width:100%;
+#flashes {
+    margin-bottom:20px;
+}
+
+.flash {
+    display: block;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     background-color: #000;
     color: #FFFF00;
-	font-size:16px;
-	text-align:center;
+    font-size:16px;
+    text-align:left;
+}
+
+.info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.error {
+    color: #D8000C;
+    background-color: #FFD2D2;
 }
 
 label { 
