@@ -16,15 +16,19 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
      */
     public $EntityManager;
     
-    public function beforeRender()
-    {
-        parent::beforeRender();
+    public function startup() {
+        parent::startup();
+        
         // Management is available only for logged in users.
         if(!$this->user->isLoggedIn()) {
             $this->flashMessage('Administrace je dostupná pouze po přihlášení', 'error');
             $this->redirect('Homepage:adminLogin');
         }
-        
+    }
+    
+    public function beforeRender()
+    {
+        parent::beforeRender();
         $seasonMan = new SeasonManager($this->EntityManager);
         $this->template->seasons = $seasonMan->getSeasons();
     }
@@ -33,6 +37,13 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     {
         $playerMan = new PlayerManager($this->EntityManager);
         $this->template->players = $playerMan->getPlayers();
+        
+        $teamMan = new TeamManager($this->EntityManager);
+        $teams = $teamMan->getTeams();
+        $this->template->teamsArr = array();
+        foreach ($teams as $t) {
+            $this->template->teamsArr[$t->getTeamId()] = $t->getTeamName();
+        }            
     }
     
     public function renderTeam($id)
@@ -51,40 +62,86 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     
     public function createComponentEditTeamForm()
     {
+        $id = $this->request->getParameter('id');
+        $teamMan = new TeamManager($this->EntityManager);
+        $selectedTeam = $teamMan->getTeamById($id);
         
-        if (!isset($this->template->selectedTeam)) {
-            $id = $this->request->getParameter('id');
-            $teamMan = new TeamManager($this->EntityManager);
-            $selectedTeam = $teamMan->getTeamById($id);
-        }
-        else {
-            $selectedTeam = $this->template->selectedTeam;
-        }
-        
-        $form = new UI\Form;
-        $form->addGroup();
-        $form->addHidden('team_id', $selectedTeam->getTeamId());
-        $form->addText('team_name', 'Jméno týmu:')->setValue($selectedTeam->getTeamName());
-        $form->addText('owner_name', 'Jméno majitele:')->setValue($selectedTeam->getOwnerName());
-        $form->addText('owner_surname', 'Příjmení majitele:')->setValue($selectedTeam->getOwnerSurname());
-        $form->addText('city', 'Město:')->setValue($selectedTeam->getCity());
-        $form->addText('address', 'Adresa:')->setValue($selectedTeam->getAddress());
-        $form->addText('postcode', 'PSČ:')->setValue($selectedTeam->getPostcode());
-        $form->addText('phone', 'Telefon na majitele:')->setValue($selectedTeam->getPhone());
-        $form->addText('email', 'Email na majitele:')->setValue($selectedTeam->getEmail());
-        $form->addText('reg_date', 'Datum registrace:')->setValue($selectedTeam->getRegistrationDate()->format('Y-m-d'))
-                ->setAttribute('readonly');
-        $form->addText('reg_code', 'Registrační kód:')->setValue($selectedTeam->getCode())
+        $form = $teamMan->getTeamForm();
+        $form->addText('registration_date', 'Datum registrace:')
+                ->setValue($selectedTeam->getRegistrationDate()->format('Y-m-d'))
                 ->setAttribute('readonly');
         $form->addSubmit('save_team', 'Uložit')
                 ->setAttribute('id', 'saveButton')
                 ->setAttribute('style', 'float:left;border:0;width:197px;');
-        $form->onValidate[] = [$this, 'validateEditTeamForm'];
+        $form->onSuccess[] = [$this, 'editTeamFormSucceeded'];
+        $form->getComponent('team_name')->setValue($selectedTeam->getTeamName());
+        $form->getComponent('owner_name')->setValue($selectedTeam->getOwnerName());
+        $form->getComponent('owner_surname')->setValue($selectedTeam->getOwnerSurname());
+        $form->getComponent('address')->setValue($selectedTeam->getAddress());
+        $form->getComponent('city')->setValue($selectedTeam->getCity());
+        $form->getComponent('postcode')->setValue($selectedTeam->getPostcode());
+        $form->getComponent('email')->setValue($selectedTeam->getEmail());
+        $form->getComponent('phone')->setValue($selectedTeam->getPhone());
+        $form->getComponent('code')
+                ->setValue($selectedTeam->getCode())
+                ->setAttribute('readonly');
         return $form;
     }
     
-    public function validateEditTeamForm($form)
+    public function editTeamFormSucceeded($form)
     {
-        $values = $form->getValues();
+        $id = $this->request->getParameter('id');
+        $teamMan = new TeamManager($this->EntityManager);
+        $updatedTeam = $teamMan->getTeamById($id);
+        
+        try {
+            $values = $form->getValues();
+            $updatedTeam->setTeamName($values['team_name']);
+            $updatedTeam->setOwnerName($values['owner_name']);
+            $updatedTeam->setOwnerSurname($values['owner_surname']);
+            $updatedTeam->setAddress($values['address']);
+            $updatedTeam->setCity($values['city']);
+            $updatedTeam->setPostcode($values['postcode']);
+            $updatedTeam->setEmail($values['email']);
+            $updatedTeam->setPhone($values['phone']);
+            $updatedTeam->setEmail($values['email']);
+            $this->EntityManager->persist($updatedTeam);
+            $this->EntityManager->flush();
+            $this->redirect('Management:team');
+        } catch (Exception $ex) {
+            $this->flashMessage('Nepodařilo se updatovat tým.', 'error');  
+            $this->redirect('Management:team');
+        }
+        
+    }
+    
+    public function handledeleteTeam($id)
+    {
+        $teamMan = new TeamManager($this->EntityManager);
+        try {
+            $teamMan->deleteTeamById($id);
+            $this->flashMessage('Tým byl úspěšně smazán.');
+            $this->redirect('Management:team');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se smazat tým.', 'error');
+            $this->redirect('Management:team');
+        }
+    }
+    
+    public function handledeletePlayer($id)
+    {
+        /*$teamMan = new TeamManager($this->EntityManager);
+        try {
+            $teamMan->deleteTeamById($id);
+            $this->flashMessage('Tým byl úspěšně smazán.');
+            $this->redirect('Management:team');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se smazat tým.', 'error');
+            $this->redirect('Management:team');
+        }*/
+        $this->flashMessage('Nepodařilo se smazat hráče.', 'error');
+        $this->redirect('Management:player');
     }
 }

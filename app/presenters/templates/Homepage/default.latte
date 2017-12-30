@@ -1,3 +1,11 @@
+{block js}
+{include #parent}
+<script>
+$( function() {
+    $( ".date_birthdate" ).datepicker({ changeYear: true, changeMonth: true });
+  } );
+</script>  
+{/block}
 {block content}
 <!--
     Content of index page
@@ -10,13 +18,11 @@
             <li><a href="#tabs-2">Registrace nového týmu</a></li>
         </ul>
         <div id="tabs-1">
-            Registrace hráče
-            {control registrationForm}
+            {control registerPlayerForm}
         </div>
 
         <div id="tabs-2">
-            Registrace týmu
-            
+            {control registerTeamForm}
         </div>
     </div>
 </div>

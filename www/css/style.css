@@ -1216,6 +1216,12 @@ label {
 	width: 700px;
 }
 
+.frmerror {
+    color: #D8000C;
+    padding-left: 10px;
+    /*background-color: #FFD2D2;*/
+}
+
 label.error { 
 		float:left;
 		color: red;

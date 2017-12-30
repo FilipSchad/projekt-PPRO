@@ -8,7 +8,7 @@
         {control editTeamForm}
     </div>
 {/if}
-<h3>Týmy</h3>
+<h1>Týmy</h1>
     <div class="dataTables_wrapper">​
         <table id="players_table" class="table js_table" >
             <thead>
@@ -37,7 +37,7 @@
                     <td>{$team->getPostcode()}</td>
                     <td>{$team->getRegistrationDate()->format('Y-m-d')}</td>
                     <td>{$team->getCode()}</td>
-                    <td><a href="?page=playersMan&deletePId=0&delete=1" onclick="if(!confirm('Chcete opravdu trvale smazat hráče yyyy yyy?')){ return false; };">smazat</a></td>
+                    <td><a n:href="deleteTeam! $team->getTeamId()" onclick="if(!confirm('Chcete opravdu trvale smazat tým {$team->getTeamName()}?')){ return false; };">smazat</a></td>
                 </tr>
                 {/foreach}
             </tbody>

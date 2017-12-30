@@ -2,7 +2,7 @@
 {include #parent}
 <script>
 $(document).ready(function(){
-    /* playground table */
+    /* players table */
     $('#players_table').dataTable({
         'bLengthChange': false,
         'iDisplayLength': -1,
@@ -22,9 +22,8 @@ $(document).ready(function(){
     Content of players' management
 -->
 
-<h3>Hráči</h3>
-<div class="dataTables_wrapper">​
-    <table id="players_table" class="table js_table" cellspacing="0" width="100%">
+<h1>Hráči</h1>
+    <table id="players_table" class="table js_table" >
         <thead>
             <tr>
                 <th>Jméno</th>
@@ -41,18 +40,17 @@ $(document).ready(function(){
         <tbody>
             {foreach $players as $player}
                 <tr>
-                    <td><a href="">jm pr</a></td>
-                    <td>tym</td>
-                    <td>phone</td>
-                    <td><a href="mailto:aa">email</td>
-                    <td>city</td>
-                    <td>address</td>
-                    <td>psc</td>
-                    <td>reg date</td>
-                    <td><a href="?page=playersMan&deletePId=0&delete=1" onclick="if(!confirm('Chcete opravdu trvale smazat hráče yyyy yyy?')){ return false; };">smazat</a></td>
+                    <td><a href="">{$player->getName()} {$player->getSurname()}</a></td>
+                    <td>{$teamsArr[$player->getTeamId()]}</td>
+                    <td>{$player->getPhone()}</td>
+                    <td><a href="mailto:{$player->getEmail()}">{$player->getPhone()}</td>
+                    <td>{$player->getCity()}</td>
+                    <td>{$player->getAddress()}</td>
+                    <td>{$player->getPostcode()}</td>
+                    <td>{$player->getRegistrationDate()->format('Y-m-d')}</td>
+                    <td><a n:href="deletePlayer! $player->getPlayerId()" onclick="if(!confirm('Chcete opravdu trvale smazat hráče {$player->getName()|noescape} {$player->getSurname()|noescape}?')){ return false; };">smazat</a></td>
                 </tr>
             {/foreach}
         </tbody>
     </table>
-</div>
 {/block}

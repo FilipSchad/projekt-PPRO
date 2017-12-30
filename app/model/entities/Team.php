@@ -73,5 +73,5 @@ class Team extends BaseEntity
     /**
      * @ORM\Column(type="string", name="logo")
      */
-    protected $logo;
+    protected $logo = 'photos/teams/no_photo_available.jpg';
 }

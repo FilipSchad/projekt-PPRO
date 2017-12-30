@@ -3,9 +3,11 @@
 namespace App\Presenters;
 
 use Nette;
-use Nette\Application\UI;
-use Nette\Security\User;
+use Nette\Application\UI\Form;
+use App\Model\PlayerManager;
 use App\Model\SeasonManager;
+use App\Model\TeamManager;
+use App\Model\Entities\Team;
 
 class HomepagePresenter extends Nette\Application\UI\Presenter
 {
@@ -30,12 +32,12 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
       
     protected function createComponentSignInForm()
     {
-        $form = new UI\Form;
+        $form = new Form;
         $form->addText('name', 'Jméno:')->setRequired('Zadejte prosím login');
         $form->addPassword('password', 'Heslo:')->setRequired('Zadejte prosím heslo');
         $form->addSubmit('login', 'Přihlásit');
         $form->onValidate[] = [$this, 'validateSignInForm'];
-        $form->onSuccess[] = function (UI\Form $form, \stdClass $values) {
+        $form->onSuccess[] = function () {
             $this->flashMessage('Byl jste úspěšně přihlášen.');
             $this->redirect('Homepage:');
         };
@@ -56,21 +58,61 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
         }
     }
     
-    protected function createComponentRegistrationForm()
+    protected function createComponentRegisterPlayerForm()
     {
-        $form = new UI\Form;
-        $form->addText('name', 'Jméno:');
-        $form->addPassword('password', 'Heslo:');
-        $form->addSubmit('login', 'Registrovat');
-        $form->onSuccess[] = [$this, 'registrationFormSucceeded'];
+        $playerMan = new PlayerManager($this->EntityManager);
+        $form = $playerMan->getPlayerForm();
+        $form->addSubmit('login', 'Registrovat')
+                ->setAttribute('class', 'submit_button');
+        $form->onSuccess[] = [$this, 'registerPlayerFormSucceeded'];
         return $form;
     }
     
-    // volá se po úspěšném odeslání formuláře
-    public function registrationFormSucceeded(UI\Form $form, $values)
+    public function registerPlayerFormSucceeded(Form $form, $values)
     {
-        // ...
-        $this->flashMessage('Byl jste úspěšně registrován.');
-        $this->redirect('Homepage:');
+        try {
+            $playerMan = new PlayerManager($this->EntityManager);
+            $playerMan->registerPlayer($values);
+            $this->flashMessage('Hráč byl úspěšně registrován.');
+            $this->redirect('Homepage:');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se zaregistrovat hráče.', 'error');
+            
+        }
+    }
+    
+    protected function createComponentRegisterTeamForm()
+    {
+        $teamMan = new TeamManager($this->EntityManager);
+        $form = $teamMan->getTeamForm();
+        $form->addSubmit('login', 'Registrovat')
+                ->setAttribute('class', 'submit_button');
+        $form->onSuccess[] = [$this, 'registerTeamFormSucceeded'];
+        return $form;
+    }
+    
+    public function registerTeamFormSucceeded(Form $form, $values)
+    {
+        try {
+            $newTeam = new Team;
+            $newTeam->setTeamName($values['team_name']);
+            $newTeam->setOwnerName($values['owner_name']);
+            $newTeam->setOwnerSurname($values['owner_surname']);
+            $newTeam->setAddress($values['address']);
+            $newTeam->setCity($values['city']);
+            $newTeam->setPostcode($values['postcode']);
+            $newTeam->setEmail($values['email']);
+            $newTeam->setPhone($values['phone']);
+            $newTeam->setCode($values['code']);
+            $newTeam->setRegistrationDate(new \DateTime("now"));
+            $this->EntityManager->persist($newTeam);
+            $this->EntityManager->flush();
+            $this->flashMessage('Tým byl úspěšně registrován.');
+            $this->redirect('Homepage:');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se zaregistrovat tým.', 'error');
+        }
     }
 }

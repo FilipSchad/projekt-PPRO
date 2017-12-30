@@ -73,5 +73,5 @@ class Player extends BaseEntity
     /**
      * @ORM\Column(type="string", name="photo")
      */
-    protected $photo;
+    protected $photo = 'photos/players/no_photo_available.jpg';
 }
