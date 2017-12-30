@@ -230,7 +230,6 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `futsal`;
-INSERT INTO `futsal`.`user` (`login`, `password`) VALUES ('admin', 'd033e22ae348aeb5660fc2140aec35850c4da997');
+INSERT INTO `futsal`.`user` (`login`, `password`) VALUES ('admin', '$2y$10$cSR/2Xlylg30sTtzWiiZc.00xA5u0w');
 
 COMMIT;
-

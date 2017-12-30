@@ -1,7 +1,9 @@
 {block js}
 {include #parent}
 <script>
-$('#players_table').dataTable({
+$(document).ready(function(){
+    /* playground table */
+    $('#players_table').dataTable({
         'bLengthChange': false,
         'iDisplayLength': -1,
         'bFilter': false,
@@ -12,6 +14,7 @@ $('#players_table').dataTable({
         'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
         'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní hráči.'}
     });
+});
         </script>
 {/block}
 {block content}
@@ -21,7 +24,7 @@ $('#players_table').dataTable({
 
 <h3>Hráči</h3>
 <div class="dataTables_wrapper">​
-    <table id="players_table" class="display" cellspacing="0" width="100%"> <!--  class="table js_table" > -->
+    <table id="players_table" class="table js_table" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th>Jméno</th>
@@ -36,28 +39,19 @@ $('#players_table').dataTable({
             </tr>
         </thead>
         <tbody>
-            <tr>
-          <td><a href="">jm pr</a></td>
-          <td>tym</td>
-          <td>phone</td>
-          <td><a href="mailto:aa">email</td>
-          <td>city</td>
-          <td>address</td>
-          <td>psc</td>
-          <td>reg date</td>
-          <td><a href="?page=playersMan&deletePId=0&delete=1" onclick="if(!confirm('Chcete opravdu trvale smazat hráče yyyy yyy?')){ return false; };">smazat</a></td>
-          </tr>
-          <tr>
-          <td><a href="">jm pr</a></td>
-          <td>tym</td>
-          <td>phone</td>
-          <td><a href="mailto:aa">email</td>
-          <td>city</td>
-          <td>address</td>
-          <td>psc</td>
-          <td>reg date</td>
-          <td><a href="?page=playersMan&deletePId=0&delete=1" onclick="if(!confirm('Chcete opravdu trvale smazat hráče yyyy yyy?')){ return false; };">smazat</a></td>
-          </tr>
+            {foreach $players as $player}
+                <tr>
+                    <td><a href="">jm pr</a></td>
+                    <td>tym</td>
+                    <td>phone</td>
+                    <td><a href="mailto:aa">email</td>
+                    <td>city</td>
+                    <td>address</td>
+                    <td>psc</td>
+                    <td>reg date</td>
+                    <td><a href="?page=playersMan&deletePId=0&delete=1" onclick="if(!confirm('Chcete opravdu trvale smazat hráče yyyy yyy?')){ return false; };">smazat</a></td>
+                </tr>
+            {/foreach}
         </tbody>
     </table>
 </div>
