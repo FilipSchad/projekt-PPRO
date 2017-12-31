@@ -24,6 +24,18 @@ class PlayerManager
         return $this->em->getRepository($this::PLAYER_ENTITY)->findBy(array(), array('surname' => 'ASC', 'name' => 'ASC'));
     }
     
+    public function getPlayerById($id)
+    {
+        return $this->em->find($this::PLAYER_ENTITY, $id);
+    }
+    
+    public function deletePlayerById($id)
+    {
+        $player = $this->em->find($this::PLAYER_ENTITY, $id);
+        $this->em->remove($player);
+        $this->em->flush();
+    }
+    
     public function registerPlayer($values)
     {
         $newPlayer = new Player;

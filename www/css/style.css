@@ -276,7 +276,7 @@ p{
 }
 
 #homePlayers_table th{
-	background: #d80100;
+	background-color: #d80100;
 	color: #fff;
 	border: solid 0px #d80100;
 }
@@ -759,7 +759,7 @@ margin-left:10px;
 
 #players_table thead th{
 	border: solid 1px #0972a5;
-	background: #0972a5;
+	background-color: #0972a5;
 }
 
 #players_table tbody{
@@ -791,7 +791,7 @@ margin-left:10px;
 
 #results_table thead th{
 	border: solid 1px #4971c9;
-	background: #0972a5;
+	background-color: #0972a5;
 }
 
 #results_table tbody{

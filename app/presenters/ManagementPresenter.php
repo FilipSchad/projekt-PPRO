@@ -33,7 +33,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $this->template->seasons = $seasonMan->getSeasons();
     }
     
-    public function renderPlayer()
+    public function renderPlayer($id)
     {
         $playerMan = new PlayerManager($this->EntityManager);
         $this->template->players = $playerMan->getPlayers();
@@ -43,7 +43,17 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $this->template->teamsArr = array();
         foreach ($teams as $t) {
             $this->template->teamsArr[$t->getTeamId()] = $t->getTeamName();
-        }            
+        }
+        
+        if ($id)
+        {
+            $this->template->selectedPlayer = $playerMan->getPlayerById($id);
+        }
+        else
+        {
+            $this->template->selectedPlayer = NULL;
+        }
+        
     }
     
     public function renderTeam($id)
@@ -88,6 +98,32 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         return $form;
     }
     
+    public function createComponentEditPlayerForm()
+    {
+        $id = $this->request->getParameter('id');
+        $playerMan = new PlayerManager($this->EntityManager);
+        $selectedPlayer = $playerMan->getPlayerById($id);
+        
+        $form = $playerMan->getPlayerForm();
+        $form->addText('registration_date', 'Datum registrace:')
+                ->setValue($selectedPlayer->getRegistrationDate()->format('Y-m-d'))
+                ->setAttribute('readonly');
+        $form->addSubmit('save_team', 'Uložit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'editPlayerFormSucceeded'];
+        $form->getComponent('name')->setValue($selectedPlayer->getName());
+        $form->getComponent('surname')->setValue($selectedPlayer->getSurname());
+        $form->getComponent('birthdate')->setValue($selectedPlayer->getBirthDate()->format('Y-m-d'));
+        $form->getComponent('address')->setValue($selectedPlayer->getAddress());
+        $form->getComponent('city')->setValue($selectedPlayer->getCity());
+        $form->getComponent('postcode')->setValue($selectedPlayer->getPostcode());
+        $form->getComponent('email')->setValue($selectedPlayer->getEmail());
+        $form->getComponent('phone')->setValue($selectedPlayer->getPhone());
+        $form->getComponent('team_id')->setValue($selectedPlayer->getTeamId());
+        return $form;
+    }
+    
     public function editTeamFormSucceeded($form)
     {
         $id = $this->request->getParameter('id');
@@ -102,7 +138,6 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
             $updatedTeam->setAddress($values['address']);
             $updatedTeam->setCity($values['city']);
             $updatedTeam->setPostcode($values['postcode']);
-            $updatedTeam->setEmail($values['email']);
             $updatedTeam->setPhone($values['phone']);
             $updatedTeam->setEmail($values['email']);
             $this->EntityManager->persist($updatedTeam);
@@ -129,19 +164,43 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         }
     }
     
+    public function editPlayerFormSucceeded($form)
+    {
+        $id = $this->request->getParameter('id');
+        $playerMan = new PlayerManager($this->EntityManager);
+        $updatedPlayer = $playerMan->getPlayerById($id);
+        
+        try {
+            $values = $form->getValues();
+            $updatedPlayer->setName($values['name']);
+            $updatedPlayer->setSurname($values['surname']);
+            $updatedPlayer->setBirthDate(new \DateTime($values['birthdate']));
+            $updatedPlayer->setAddress($values['address']);
+            $updatedPlayer->setCity($values['city']);
+            $updatedPlayer->setPostcode($values['postcode']);
+            $updatedPlayer->setEmail($values['email']);
+            $updatedPlayer->setPhone($values['phone']);
+            $updatedPlayer->setTeamId($values['team_id']);
+            $this->EntityManager->persist($updatedPlayer);
+            $this->EntityManager->flush();
+            $this->redirect('Management:player');
+        } catch (Exception $ex) {
+            $this->flashMessage('Nepodařilo se updatovat hráče.', 'error');  
+            $this->redirect('Management:player');
+        }
+    }
+    
     public function handledeletePlayer($id)
     {
-        /*$teamMan = new TeamManager($this->EntityManager);
+        $playerMan = new PlayerManager($this->EntityManager);
         try {
-            $teamMan->deleteTeamById($id);
-            $this->flashMessage('Tým byl úspěšně smazán.');
-            $this->redirect('Management:team');
+            $playerMan->deletePlayerById($id);
+            $this->flashMessage('Hráč byl úspěšně smazán.');
+            $this->redirect('Management:player');
         }
         catch (\Doctrine\DBAL\DBALException $e) {
-            $this->flashMessage('Nepodařilo se smazat tým.', 'error');
-            $this->redirect('Management:team');
-        }*/
-        $this->flashMessage('Nepodařilo se smazat hráče.', 'error');
-        $this->redirect('Management:player');
+            $this->flashMessage('Nepodařilo se smazat hráče.', 'error');
+            $this->redirect('Management:player');
+        }
     }
 }

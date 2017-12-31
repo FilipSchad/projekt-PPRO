@@ -15,18 +15,29 @@ $(document).ready(function(){
         'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní hráči.'}
     });
 });
-        </script>
+
+$( function() {
+    $( ".date_birthdate" ).datepicker({ changeYear: true, changeMonth: true });
+  } );
+</script>
 {/block}
 {block content}
 <!--
     Content of players' management
 -->
+{if $selectedPlayer}
+    <h1>Editovat hráče: {$selectedPlayer->getName()} {$selectedPlayer->getSurname()}</h1>
+    <div id="playerDetail">
+        {control editPlayerForm}
+    </div>
+{/if}
 
 <h1>Hráči</h1>
     <table id="players_table" class="table js_table" >
         <thead>
             <tr>
                 <th>Jméno</th>
+                <th>Příjmení</th>
                 <th>Tým</th>
                 <th>Telefon</th>
                 <th>Email</th>
@@ -40,10 +51,11 @@ $(document).ready(function(){
         <tbody>
             {foreach $players as $player}
                 <tr>
-                    <td><a href="">{$player->getName()} {$player->getSurname()}</a></td>
+                    <td><a n:href="Management:player $player->getPlayerId()">{$player->getName()}</a></td>
+                    <td><a n:href="Management:player $player->getPlayerId()">{$player->getSurname()}</a></td>
                     <td>{$teamsArr[$player->getTeamId()]}</td>
                     <td>{$player->getPhone()}</td>
-                    <td><a href="mailto:{$player->getEmail()}">{$player->getPhone()}</td>
+                    <td><a href="mailto:{$player->getEmail()}">{$player->getEmail()}</td>
                     <td>{$player->getCity()}</td>
                     <td>{$player->getAddress()}</td>
                     <td>{$player->getPostcode()}</td>
