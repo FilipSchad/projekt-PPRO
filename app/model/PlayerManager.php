@@ -36,6 +36,15 @@ class PlayerManager
         $this->em->flush();
     }
     
+    public function getPlayersByTeamId($id)
+    {
+        return $this->em->getRepository($this::PLAYER_ENTITY)
+                ->findBy(
+                        array('teamId' => $id), 
+                        array('surname' => 'ASC', 'name' => 'ASC')
+                );
+    }
+    
     public function registerPlayer($values)
     {
         $newPlayer = new Player;

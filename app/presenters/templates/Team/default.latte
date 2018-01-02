@@ -2,25 +2,41 @@
 <!--
     Content of teams' management
 -->
-teamDetails
-<!-- <h3>Hráči</h3> -->
-<div class="dataTables_wrapper">​
-    <table style="width: auto;" id="players_table" class="table js_table" >
-        <thead>
-            <tr>
-                <th>Hráči</th>
-                <!--<th>Telefon</th>
-                <th>Email</th>
-                <th>Město</th>
-                <th>Adresa</th>
-                <th>PSČ</th>
-                <th>Datum registrace</th> -->
-            </tr>
-        </thead>
-        <tbody>
-            playersTable
-        </tbody>
-    </table>
-</div>
-playerDetails
+<h1>Týmy</h1>
+    <div class="dataTables_wrapper">​
+        <table id="players_table" class="table js_table" style="width:auto">
+            <thead>
+                <tr>
+                    <th>Název týmu</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $teams as $team}
+                <tr>
+                    <td><a n:href="Team:default $team->getTeamId()">{$team->getTeamName()}</a></td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+
+{if $selectedTeam}
+    <h1>Hráči týmu {$selectedTeam->getTeamName()}:</h1>
+    <div id="playerDetail">
+        <table id="players_table" class="table js_table" style="width:auto">
+            <thead>
+                <tr>
+                    <th>Jméno hráče</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $players as $player}
+                <tr>
+                    <td>{$player->getName()} {$player->getSurname()}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+{/if}
 {/block}
