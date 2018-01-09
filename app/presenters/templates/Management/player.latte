@@ -53,7 +53,7 @@ $( function() {
                 <tr>
                     <td><a n:href="Management:player $player->getPlayerId()">{$player->getName()}</a></td>
                     <td><a n:href="Management:player $player->getPlayerId()">{$player->getSurname()}</a></td>
-                    <td>{$teamsArr[$player->getTeamId()]}</td>
+                    <td>{$player->getTeam()->getTeamName()}</td>
                     <td>{$player->getPhone()}</td>
                     <td><a href="mailto:{$player->getEmail()}">{$player->getEmail()}</td>
                     <td>{$player->getCity()}</td>

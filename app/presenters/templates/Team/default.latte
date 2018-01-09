@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                {foreach $players as $player}
+                {foreach $selectedTeam->getPlayers() as $player}
                 <tr>
                     <td>{$player->getName()} {$player->getSurname()}</td>
                 </tr>

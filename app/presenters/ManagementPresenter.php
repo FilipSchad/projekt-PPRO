@@ -38,13 +38,6 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $playerMan = new PlayerManager($this->EntityManager);
         $this->template->players = $playerMan->getPlayers();
         
-        $teamMan = new TeamManager($this->EntityManager);
-        $teams = $teamMan->getTeams();
-        $this->template->teamsArr = array();
-        foreach ($teams as $t) {
-            $this->template->teamsArr[$t->getTeamId()] = $t->getTeamName();
-        }
-        
         if ($id)
         {
             $this->template->selectedPlayer = $playerMan->getPlayerById($id);

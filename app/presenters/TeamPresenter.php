@@ -5,7 +5,6 @@ namespace App\Presenters;
 use Nette;
 use App\Model\SeasonManager;
 use App\Model\TeamManager;
-use App\Model\PlayerManager;
 
 class TeamPresenter extends Nette\Application\UI\Presenter
 {
@@ -29,8 +28,6 @@ class TeamPresenter extends Nette\Application\UI\Presenter
         if ($id)
         {
             $this->template->selectedTeam = $teamMan->getTeamById($id);
-            $playerMan = new PlayerManager($this->EntityManager);
-            $this->template->players = $playerMan->getPlayersByTeamId($id);
         }
         else
         {

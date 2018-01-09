@@ -74,4 +74,10 @@ class Team extends BaseEntity
      * @ORM\Column(type="string", name="logo")
      */
     protected $logo = 'photos/teams/no_photo_available.jpg';
+    
+    /**
+     * One Team has Many Players.
+     * @ORM\OneToMany(targetEntity="Player", mappedBy="team")
+     */
+    protected $players;
 }
