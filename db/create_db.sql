@@ -202,34 +202,4 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
--- -----------------------------------------------------
--- Data for table `futsal`.`region`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `futsal`;
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Jihočeský kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Jihomoravský kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Karlovarský kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Královéhradecký kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Liberecký kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Moravskoslezský kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Olomoucký kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Pardubický kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Plzeňský kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Praha');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Středočeský kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Ústecký kraj');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Vysočina');
-INSERT INTO `futsal`.`region` (`regionId`, `regionName`) VALUES (NULL, 'Zlínský kraj');
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `futsal`.`user`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `futsal`;
-INSERT INTO `futsal`.`user` (`login`, `password`) VALUES ('admin', '$2y$10$cSR/2Xlylg30sTtzWiiZc.00xA5u0w');
-
 COMMIT;
