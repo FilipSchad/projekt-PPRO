@@ -21,7 +21,7 @@ class Player extends BaseEntity
     protected $playerId;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Team", fetch="EAGER", inversedBy="players")
+     * @ORM\ManyToOne(targetEntity="Team", inversedBy="players")
      * @ORM\JoinColumn(name="teamId", referencedColumnName="teamId")
      */
     protected $team;

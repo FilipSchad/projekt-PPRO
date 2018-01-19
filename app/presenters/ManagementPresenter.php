@@ -7,6 +7,7 @@ use Nette\Application\UI;
 use App\Model\SeasonManager;
 use App\Model\PlayerManager;
 use App\Model\TeamManager;
+use App\Model\PaymentManager;
 
 class ManagementPresenter extends Nette\Application\UI\Presenter
 {
@@ -63,6 +64,13 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         }
     }
     
+    public function renderPayment($id)
+    {
+        $payMan = new PaymentManager($this->EntityManager);
+        $this->template->payments = $payMan->getPayments();
+    }
+    
+    
     public function createComponentEditTeamForm()
     {
         $id = $this->request->getParameter('id');
@@ -113,7 +121,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $form->getComponent('postcode')->setValue($selectedPlayer->getPostcode());
         $form->getComponent('email')->setValue($selectedPlayer->getEmail());
         $form->getComponent('phone')->setValue($selectedPlayer->getPhone());
-        $form->getComponent('team_id')->setValue($selectedPlayer->getTeamId());
+        $form->getComponent('team_id')->setValue($selectedPlayer->getTeam()->getTeamId());
         return $form;
     }
     
@@ -135,9 +143,10 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
             $updatedTeam->setEmail($values['email']);
             $this->EntityManager->persist($updatedTeam);
             $this->EntityManager->flush();
+            $this->flashMessage('Tým byl úspěšně updatován.', 'error');
             $this->redirect('Management:team');
         } catch (Exception $ex) {
-            $this->flashMessage('Nepodařilo se updatovat tým.', 'error');  
+            $this->flashMessage('Nepodařilo se updatovat tým.', 'error');
             $this->redirect('Management:team');
         }
         
@@ -173,12 +182,16 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
             $updatedPlayer->setPostcode($values['postcode']);
             $updatedPlayer->setEmail($values['email']);
             $updatedPlayer->setPhone($values['phone']);
-            $updatedPlayer->setTeamId($values['team_id']);
+            if ($values['team_id'] != $updatedPlayer->getTeam()->getTeamId()){
+                $teamMan = new TeamManager($this->EntityManager);
+                $updatedPlayer->setTeam($teamMan->getTeamById($values['team_id']));
+            }            
             $this->EntityManager->persist($updatedPlayer);
             $this->EntityManager->flush();
+            $this->flashMessage('Hráč byl úspěšně updatován.', 'info');  
             $this->redirect('Management:player');
         } catch (Exception $ex) {
-            $this->flashMessage('Nepodařilo se updatovat hráče.', 'error');  
+            $this->flashMessage('Nepodařilo se updatovat hráče.', 'error');
             $this->redirect('Management:player');
         }
     }

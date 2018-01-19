@@ -4,13 +4,8 @@
 $(document).ready(function(){
     /* players table */
     $('#players_table').dataTable({
-        'bLengthChange': false,
-        'iDisplayLength': -1,
-        'bFilter': false,
-        'bInfo': false,
         'bSort': true,
         'aaSorting': [[1,'asc'],[0, 'asc']],
-        'bPaginate': false,
         'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
         'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní hráči.'}
     });
@@ -33,7 +28,7 @@ $( function() {
 {/if}
 
 <h1>Hráči</h1>
-    <table id="players_table" class="table js_table" >
+    <table id="players_table" class="display compact js_table" >
         <thead>
             <tr>
                 <th>Jméno</th>

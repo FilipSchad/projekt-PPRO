@@ -19,7 +19,8 @@
 		"nette/utils": "^2.4",
 		"latte/latte": "^2.4",
 		"tracy/tracy": "^2.4",
-		"kdyby/doctrine": "^3.2"
+		"kdyby/doctrine": "^3.2",
+		"datatables/datatables": "1.10.16"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"

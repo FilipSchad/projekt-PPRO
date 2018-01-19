@@ -1,3 +1,18 @@
+{block js}
+{include #parent}
+<script>
+$(document).ready(function(){
+    /* players table */
+    $('#teams_table').dataTable({
+        'bSort': true,
+        'aaSorting': [[0,'asc']],
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeny žádné týmy.'}
+    });
+});
+
+</script>
+{/block}
 {block content}
 <!--
     Content of teams' management
@@ -9,8 +24,7 @@
     </div>
 {/if}
 <h1>Týmy</h1>
-    <div class="dataTables_wrapper">​
-        <table id="players_table" class="table js_table" >
+    <table id="teams_table" class="display compact js_table" >
             <thead>
                 <tr>
                     <th>Název týmu</th>
@@ -42,5 +56,4 @@
                 {/foreach}
             </tbody>
         </table>
-    </div>
 {/block}
