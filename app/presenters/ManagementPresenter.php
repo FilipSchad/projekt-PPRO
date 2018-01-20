@@ -8,6 +8,7 @@ use App\Model\SeasonManager;
 use App\Model\PlayerManager;
 use App\Model\TeamManager;
 use App\Model\PaymentManager;
+use App\Model\ArbiterManager;
 
 class ManagementPresenter extends Nette\Application\UI\Presenter
 {
@@ -70,6 +71,11 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $this->template->payments = $payMan->getPayments();
     }
     
+    public function renderArbiter($id)
+    {
+        $arbiterMan = new ArbiterManager($this->EntityManager);
+        $this->template->arbiters = $arbiterMan->getArbiters();
+    }
     
     public function createComponentEditTeamForm()
     {
@@ -208,5 +214,10 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
             $this->flashMessage('Nepodařilo se smazat hráče.', 'error');
             $this->redirect('Management:player');
         }
+    }
+    
+    public function handledeleteArbiter($id)
+    {
+        
     }
 }

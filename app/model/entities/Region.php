@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\BaseEntity;
 
 /**
- * Doctrine entita pro tabulku region.
+ * Entita region.
  * @package App\Model\Entities
  * @ORM\Entity
  * @ORM\Table(name="region")
@@ -24,4 +24,10 @@ class Region extends BaseEntity
      * @ORM\Column(type="string", name="regionName")
      */
     protected $regionName;
+    
+    /**
+     * One Region has Many Playgrounds.
+     * @ORM\OneToMany(targetEntity="Playground", mappedBy="playground")
+     */
+    protected $playgrounds;
 }

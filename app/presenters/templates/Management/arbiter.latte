@@ -1,27 +1,50 @@
+{block js}
+{include #parent}
+<script>
+$(document).ready(function(){
+    /* arbiters table */
+    $('#arbiters_table').dataTable({
+        'bSort': true,
+        'aaSorting': [[0, 'asc']],
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní rozhodčí.'}
+    });
+});
+</script>
+{/block}
 {block content}
 <!--
     Content of payments' management
 -->
 <div class="addButton">addArbiterButton</div>
 <h1>Rozhodčí</h1>
-<div class="dataTables_wrapper">​
-    <table id="arbiters_table" class="table js_table" >
-        <thead>
+<table id="arbiters_table" class="table compact js_table" >
+    <thead>
+        <tr>
+            <th>Jméno</th>
+            <th>Telefon</th>
+            <th>Email</th>
+            <th>Město</th>
+            <th>Adresa</th>
+            <th>PSČ</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $arbiters as $arbiter}
             <tr>
-                <th>Jméno</th>
-                <th>Telefon</th>
-                <th>Email</th>
-                <th>Město</th>
-                <th>Adresa</th>
-                <th>PSČ</th>
-                <th>&nbsp;</th>
+                <td><a n:href="Management:arbiter $arbiter->getArbiterId()">{$arbiter->getName()} {$arbiter->getSurname()}</a></td>
+                <td>{$arbiter->getPhone()}</td>
+                <td><a href="mailto:{$arbiter->getEmail()}">{$arbiter->getEmail()}</td>
+                <td>{$arbiter->getCity()}</td>
+                <td>{$arbiter->getAddress()}</td>
+                <td>{$arbiter->getPostcode()}</td>
+                <td><a n:href="deleteArbiter! $arbiter->getArbiterId()" onclick="if(!confirm('Chcete opravdu trvale smazat hráče {$arbiter->getName()|noescape} {$arbiter->getSurname()|noescape}?')){ return false; };">smazat</a></td>
             </tr>
-        </thead>
-        <tbody>
-            arbitersTable
-        </tbody>
-    </table>
-</div>
+        {/foreach}
+    </tbody>
+</table>
+
 editArbiter
 addArbiter
 {/block}

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\BaseEntity;
 
 /**
- * Doctrine entita pro tabulku user.
+ * Entita user.
  * @package App\Model\Entitites
  * @ORM\Entity
  * @ORM\Table(name="user")

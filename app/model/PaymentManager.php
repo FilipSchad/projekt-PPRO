@@ -23,7 +23,7 @@ class PaymentManager
         return $this->em->getRepository($this::PAYMENT_ENTITY)->findBy(array());
     }
     
-    public function getPlayerById($id)
+    public function getPaymentById($id)
     {
         return $this->em->find($this::PAYMENT_ENTITY, $id);
     }

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\BaseEntity;
 
 /**
- * Doctrine entita pro tabulku payment.
+ * Entita payment.
  * @package App\Model\Entities
  * @ORM\Entity
  * @ORM\Table(name="payment")

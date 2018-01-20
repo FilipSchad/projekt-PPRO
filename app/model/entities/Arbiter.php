@@ -6,30 +6,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\BaseEntity;
 
 /**
- * Entita player.
+ * Entita arbiter.
  * @package App\Model\Entities
  * @ORM\Entity
- * @ORM\Table(name="player")
+ * @ORM\Table(name="arbiter")
  */
-class Player extends BaseEntity
+class Arbiter extends BaseEntity
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer", name="playerId")
+     * @ORM\Column(type="integer", name="arbiterId")
      * @ORM\GeneratedValue
      */
-    protected $playerId;
-    
-    /**
-     * @ORM\ManyToOne(targetEntity="Team", inversedBy="players")
-     * @ORM\JoinColumn(name="teamId", referencedColumnName="teamId")
-     */
-    protected $team;
-    
-    /**
-     * @ORM\Column(type="datetime", name="registrationDate")
-     */
-    protected $registrationDate;
+    protected $arbiterId;
     
     /**
      * @ORM\Column(type="string", name="name")
@@ -40,11 +29,6 @@ class Player extends BaseEntity
      * @ORM\Column(type="string", name="surname")
      */
     protected $surname;
-    
-    /**
-     * @ORM\Column(type="datetime", name="birthDate")
-     */
-    protected $birthDate;
     
     /**
      * @ORM\Column(type="string", name="phone")
@@ -70,9 +54,4 @@ class Player extends BaseEntity
      * @ORM\Column(type="string", name="postcode")
      */
     protected $postcode;
-    
-    /**
-     * @ORM\Column(type="string", name="photo")
-     */
-    protected $photo = 'photos/players/no_photo_available.jpg';
 }
