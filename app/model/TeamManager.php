@@ -31,8 +31,14 @@ class TeamManager
     public function deleteTeamById($id)
     {
         $team = $this->em->find($this::TEAM_ENTITY, $id);
-        $this->em->remove($team);
-        $this->em->flush();
+        if (count($team->getPlayers()) == 0) {
+            $this->em->remove($team);
+            $this->em->flush();
+        }
+        else
+        {
+            throw new \Exception("Není možné smazat tým, který obsahuje hráče.");
+        }
     }
     
     public function getTeamForm()

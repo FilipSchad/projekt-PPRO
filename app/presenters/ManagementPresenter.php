@@ -51,58 +51,24 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         
     }
     
-    public function renderTeam($id)
-    {
-        $teamMan = new TeamManager($this->EntityManager);
-        $this->template->teams = $teamMan->getTeams();
-        if ($id)
-        {
-            $this->template->selectedTeam = $teamMan->getTeamById($id);
-        }
-        else
-        {
-            $this->template->selectedTeam = NULL;
-        }
-    }
-    
     public function renderPayment($id)
     {
         $payMan = new PaymentManager($this->EntityManager);
         $this->template->payments = $payMan->getPayments();
+        if ($id)
+        {
+            $this->template->selectedPayment = $payMan->getPaymentById($id);
+        }
+        else
+        {
+            $this->template->selectedPayment = NULL;
+        }
     }
     
     public function renderArbiter($id)
     {
         $arbiterMan = new ArbiterManager($this->EntityManager);
         $this->template->arbiters = $arbiterMan->getArbiters();
-    }
-    
-    public function createComponentEditTeamForm()
-    {
-        $id = $this->request->getParameter('id');
-        $teamMan = new TeamManager($this->EntityManager);
-        $selectedTeam = $teamMan->getTeamById($id);
-        
-        $form = $teamMan->getTeamForm();
-        $form->addText('registration_date', 'Datum registrace:')
-                ->setValue($selectedTeam->getRegistrationDate()->format('Y-m-d'))
-                ->setAttribute('readonly');
-        $form->addSubmit('save_team', 'Uložit')
-                ->setAttribute('id', 'saveButton')
-                ->setAttribute('style', 'float:left;border:0;width:197px;');
-        $form->onSuccess[] = [$this, 'editTeamFormSucceeded'];
-        $form->getComponent('team_name')->setValue($selectedTeam->getTeamName());
-        $form->getComponent('owner_name')->setValue($selectedTeam->getOwnerName());
-        $form->getComponent('owner_surname')->setValue($selectedTeam->getOwnerSurname());
-        $form->getComponent('address')->setValue($selectedTeam->getAddress());
-        $form->getComponent('city')->setValue($selectedTeam->getCity());
-        $form->getComponent('postcode')->setValue($selectedTeam->getPostcode());
-        $form->getComponent('email')->setValue($selectedTeam->getEmail());
-        $form->getComponent('phone')->setValue($selectedTeam->getPhone());
-        $form->getComponent('code')
-                ->setValue($selectedTeam->getCode())
-                ->setAttribute('readonly');
-        return $form;
     }
     
     public function createComponentEditPlayerForm()
@@ -131,47 +97,6 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         return $form;
     }
     
-    public function editTeamFormSucceeded($form)
-    {
-        $id = $this->request->getParameter('id');
-        $teamMan = new TeamManager($this->EntityManager);
-        $updatedTeam = $teamMan->getTeamById($id);
-        
-        try {
-            $values = $form->getValues();
-            $updatedTeam->setTeamName($values['team_name']);
-            $updatedTeam->setOwnerName($values['owner_name']);
-            $updatedTeam->setOwnerSurname($values['owner_surname']);
-            $updatedTeam->setAddress($values['address']);
-            $updatedTeam->setCity($values['city']);
-            $updatedTeam->setPostcode($values['postcode']);
-            $updatedTeam->setPhone($values['phone']);
-            $updatedTeam->setEmail($values['email']);
-            $this->EntityManager->persist($updatedTeam);
-            $this->EntityManager->flush();
-            $this->flashMessage('Tým byl úspěšně updatován.', 'error');
-            $this->redirect('Management:team');
-        } catch (Exception $ex) {
-            $this->flashMessage('Nepodařilo se updatovat tým.', 'error');
-            $this->redirect('Management:team');
-        }
-        
-    }
-    
-    public function handledeleteTeam($id)
-    {
-        $teamMan = new TeamManager($this->EntityManager);
-        try {
-            $teamMan->deleteTeamById($id);
-            $this->flashMessage('Tým byl úspěšně smazán.');
-            $this->redirect('Management:team');
-        }
-        catch (\Doctrine\DBAL\DBALException $e) {
-            $this->flashMessage('Nepodařilo se smazat tým.', 'error');
-            $this->redirect('Management:team');
-        }
-    }
-    
     public function editPlayerFormSucceeded($form)
     {
         $id = $this->request->getParameter('id');
@@ -186,7 +111,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
             $updatedPlayer->setAddress($values['address']);
             $updatedPlayer->setCity($values['city']);
             $updatedPlayer->setPostcode($values['postcode']);
-            $updatedPlayer->setEmail($values['email']);
+            $updatedPlayer->setEmail($values['email']); 
             $updatedPlayer->setPhone($values['phone']);
             if ($values['team_id'] != $updatedPlayer->getTeam()->getTeamId()){
                 $teamMan = new TeamManager($this->EntityManager);
@@ -219,5 +144,92 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     public function handledeleteArbiter($id)
     {
         
+    }
+    
+    public function handledeletePayment($id)
+    {
+        $paymentMan = new PaymentManager($this->EntityManager);
+        try {
+            $paymentMan->deletePaymentById($id);
+            $this->flashMessage('Platba byla úspěšně smazána.');
+            $this->redirect('Management:payment');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se smazat platbu.', 'error');
+            $this->redirect('Management:payment');
+        }
+    }
+ 
+    protected function createComponentNewPaymentForm()
+    {
+        $payMan = new PaymentManager($this->EntityManager);
+        $form = $payMan->getPaymentForm();
+        $form->addSubmit('create_payment', 'Vytvořit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'createPaymentFormSucceeded'];
+        return $form;
+    }
+    
+    public function createPaymentFormSucceeded($form)
+    {
+        $payMan = new PaymentManager($this->EntityManager);
+        if($payMan->createOrUpdatePaymentFromForm($form)) {
+            $this->flashMessage('Platba byla úspěšně vytvořena.', 'info');  
+            $this->redirect('Management:payment');
+        }
+        else {
+            $this->flashMessage('Nepodařilo se vytvořit platbu.', 'error');
+            $this->redirect('Management:payment');
+        }
+    }
+    
+    public function createComponentEditPaymentForm()
+    {
+        $id = $this->request->getParameter('id');
+        $payMan = new PaymentManager($this->EntityManager);
+        $selectedPayment = $payMan->getPaymentById($id);
+        
+        $form = $payMan->getPaymentForm();
+        $form->getComponent('player_id')->setValue($selectedPayment->getPlayer()->getPlayerId());
+        $form->getComponent('purpose')->setValue($selectedPayment->getPurpose());
+        $form->getComponent('sum')->setValue($selectedPayment->getSum());
+        $form->getComponent('dueDate')->setValue($selectedPayment->getDueDate()->format('d.m.Y'));
+        $form->getComponent('payedOn')->setValue($selectedPayment->getPayedOn()->format('d.m.Y'));
+        $form->getComponent('variableSymbol')->setValue($selectedPayment->getVariableSymbol());
+        $form->getComponent('season_id')->setValue($selectedPayment->getSeason()->getSeasonId());
+        
+        $teamMan = new teamManager($this->EntityManager);
+        $teams = $teamMan->getTeams();
+        $teamArr = array( "" => "");
+        foreach ($teams as $team) {
+            $teamArr[$team->getTeamId()] = $team->getTeamName();
+        }
+        
+        $form->addSelect('team_id', 'Tým:')
+                ->setItems($teamArr)
+                ->setRequired('Položka je povinná.')
+                ->setAttribute('placeholder', 'Vyber tým')
+                ->setValue($selectedPayment->getTeam()->getTeamId());
+        
+        $form->addSubmit('save_payment', 'Uložit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'editPaymentFormSucceeded'];
+        return $form;
+    }
+    
+    public function editPaymentFormSucceeded($form)
+    {
+        $id = $this->request->getParameter('id');
+        $payMan = new PaymentManager($this->EntityManager);
+        if($payMan->createOrUpdatePaymentFromForm($form, $id)) {
+            $this->flashMessage('Platba byla úspěšně updatována.', 'info');  
+            $this->redirect('Management:payment');
+        }
+        else {
+            $this->flashMessage('Nepodařilo se updatovat platbu.', 'error');
+            $this->redirect('Management:payment');
+        }
     }
 }

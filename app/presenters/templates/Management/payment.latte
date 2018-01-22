@@ -10,15 +10,33 @@ $(document).ready(function(){
         'oLanguage': {'sEmptyTable': 'Nejsou evidovány žádné platby.'}
     });
 });
+
+$( function() {
+    $( ".date_duedate" ).datepicker({ changeYear: true, changeMonth: true });
+  } );
+
+$( function() {
+    $( ".date_payedon" ).datepicker({ changeYear: true, changeMonth: true });
+  } );
 </script>
 {/block}
 {block content}
 <!--
     Content of payments' management
 -->
+{if $selectedPayment}
+    <h1>Editovat platbu:</h1>
+    <div id="playerDetail">
+        {control editPaymentForm}
+    </div>
+{else}
+    <div>
+        <a n:href="Management:createPayment">
+            <input type="submit" name="add_new_payment" id="saveButton2" value="Vytvořit novou platbu" />
+        </a>
+    </div>
+{/if}
 
-<div>addPaymentButton</div>
-<div>addPaymentForm</div>
 <h1>Platby</h1>            
 <table id="payment_table" class="display compact js_table" >
     <thead>
@@ -37,7 +55,7 @@ $(document).ready(function(){
     <tbody>
         {foreach $payments as $payment}
                 <tr>
-                    <td><a n:href="Management:payment $payment->getPaymentId()">{$payment->getPlayer()->getName()}</a></td>
+                    <td><a n:href="Management:payment $payment->getPaymentId()">{$payment->getPlayer()->getName()} {$payment->getPlayer()->getSurname()}</a></td>
                     <td><a n:href="Management:payment $payment->getPaymentId()">{$payment->getTeam()->getTeamName()}</a></td>
                     <td>{$payment->getPurpose()}</td>
                     <td>{$payment->getSum()}</td>
@@ -45,7 +63,7 @@ $(document).ready(function(){
                     <td>{$payment->getDueDate()->format('Y-m-d')}</td>
                     <td>{if $payment->getPayedOn()} {$payment->getPayedOn()->format('Y-m-d')}{/if}</td>
                     <td>{$payment->getSeason()->getSeasonName()}</td>
-                    <td><a n:href="deletePlayer! $payment->getPaymentId()" onclick="if(!confirm('Chcete opravdu trvale smazat platbu?')){ return false; };">smazat</a></td>
+                    <td><a n:href="deletePayment! $payment->getPaymentId()" onclick="if(!confirm('Chcete opravdu trvale smazat platbu?')){ return false; };">smazat</a></td>
                 </tr>
             {/foreach}
     </tbody>
