@@ -1,0 +1,21 @@
+{block js}
+{include #parent}
+<script>
+$( function() {
+    $( ".date_duedate" ).datepicker({ changeYear: true, changeMonth: true });
+  } );
+
+$( function() {
+    $( ".date_payedon" ).datepicker({ changeYear: true, changeMonth: true });
+  } );
+</script>
+{/block}
+{block content}
+<!--
+    Content of creating payment
+-->
+<h1>Nová platba:</h1>
+    <div id="playerDetail">
+        {control newPaymentForm}
+    </div>
+{/block}
