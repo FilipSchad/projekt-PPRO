@@ -16,18 +16,25 @@ $(document).ready(function(){
 <!--
     Content of payments' management
 -->
-{if $selectedArbiter}
-    <h1>Editovat platbu:</h1>
+{if isset($createArbiter)}
+    <h1>Nový rozhodčí:</h1>
     <div id="playerDetail">
-        {control editArbiterForm}
+        {control newArbiterForm}
     </div>
 {else}
     <div>
-        <a n:href="Management:createArbiter">
+        <a n:href="CreateArbiter!">
             <input type="submit" name="add_new_arbiter" id="saveButton2" value="Vytvořit rozhodčí" />
         </a>
     </div>
+{if $selectedArbiter}
+    <h1>Editovat rozhodčí:</h1>
+    <div id="playerDetail">
+        {control editArbiterForm}
+    </div>
 {/if}
+{/if}
+
 <h1>Rozhodčí</h1>
 <table id="arbiters_table" class="table compact js_table" >
     <thead>

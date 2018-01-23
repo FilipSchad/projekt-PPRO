@@ -20,7 +20,18 @@ $(document).ready(function(){
 <!--
     Content of seasons' management
 -->
-<div>addSeasonButton</div>
+{if isset($showNewSeasonForm)}
+    <h1>Vytvořit novou sezónu:</h1>
+    <div id="playerDetail">
+        {control newSeasonForm}
+    </div>
+{else}
+<div>
+    <a n:href="CreateSeason!">
+        <input type="submit" name="add_new_season" id="saveButton2" value="Vytvořit sezónu" />
+    </a>
+</div>
+{/if}
 <h1>Sezóny</h1>
 <table id="seasons_table" class="table compact js_table" style="width: 480px; float: left;">
     <thead>
@@ -34,10 +45,10 @@ $(document).ready(function(){
     <tbody>
         {foreach $seasons as $season}
             <tr>
-                <td><a n:href="Management:season $season->getSeasonId()">{$season->getSeasonName()}</a></td>
+                <td>{$season->getSeasonName()}</td>
                 <td>{if $season->getActual()}Ano{/if}</td>
-                <td>{if $season->getActual() == 0}<a n:href="setActiveSeason! $season->getSeasonId()" onclick="if(!confirm('Chcete opravdu nastavit sezónu {$season->getSeasonName()|noescape} jako aktuální?')){ return false; };">aktuální</a>{/if}</td>
-                <td><a n:href="deleteSeason! $season->getSeasonId()" onclick="if(!confirm('Chcete opravdu trvale smazat sezónu {$season->getSeasonName()|noescape}?')){ return false; };">smazat</a></td>
+                <td>{if $season->getActual() == 0}<a n:href="SetActiveSeason! $season->getSeasonId()" onclick="if(!confirm('Chcete opravdu nastavit sezónu {$season->getSeasonName()|noescape} jako aktuální?')){ return false; };">aktuální</a>{/if}</td>
+                <td><a n:href="DeleteSeason! $season->getSeasonId()" onclick="if(!confirm('Chcete opravdu trvale smazat sezónu {$season->getSeasonName()|noescape}?')){ return false; };">smazat</a></td>
             </tr>
         {/foreach}
     </tbody>

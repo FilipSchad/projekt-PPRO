@@ -28,6 +28,13 @@ $(document).ready(function(){
 <!--
     Content of teams
 -->
+{if isset($updatedTeam)}
+    <h1>Editovat tým: {$updatedTeam->getTeamName()}</h1>
+    <div id="playerDetail">
+        {control editTeamForm}
+    </div>
+{/if}
+
 <h1>Týmy</h1>
     <table id="teams_table" class="display compact js_table">
         <thead>
@@ -60,15 +67,14 @@ $(document).ready(function(){
                 <td>{$team->getPostcode()}</td>
                 <td>{$team->getRegistrationDate()->format('Y-m-d')}</td>
                 <td>{$team->getCode()}</td>
-                <td><a n:href="Team:update $team->getTeamId()">Upravit</a></td>
+                <td><a n:href="updateTeam! $team->getTeamId()">Upravit</a></td>
                 <td><a n:href="deleteTeam! $team->getTeamId()" onclick="if(!confirm('Chcete opravdu trvale smazat tým {$team->getTeamName()}?')){ return false; };">smazat</a></td>
                 {/if}
             </tr>
             {/foreach}
         </tbody>
     </table>
-
-{if $selectedTeam}
+{if isset($selectedTeam)}
     <h1>Hráči týmu {$selectedTeam->getTeamName()}:</h1>
         <table id="players_table" class="display compact js_table" style="float: left; width: auto">
             <thead>

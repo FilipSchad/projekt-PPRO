@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Nette\Application\UI;
 use App\Model\Entities\Season;
 
 /*
@@ -24,5 +25,14 @@ class SeasonManager
     public function getSeasonById($id)
     {
         return $this->em->find('\App\Model\Entities\Season', $id);
+    }
+    
+    public function getSeasonForm()
+    {
+        $form = new UI\Form;
+        $form->addText('name', 'Název sezóny:')
+                ->setRequired('Položka je povinná.')
+                ->setAttribute('placeholder', 'Název');
+        return $form;
     }
 }

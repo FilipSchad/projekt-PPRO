@@ -29,13 +29,9 @@ class TeamPresenter extends Nette\Application\UI\Presenter
         {
             $this->template->selectedTeam = $teamMan->getTeamById($id);
         }
-        else
-        {
-            $this->template->selectedTeam = NULL;
-        }
     }
     
-    public function renderUpdate($id)
+    /*public function renderUpdate($id)
     {
     $teamMan = new TeamManager($this->EntityManager);
         $this->template->teams = $teamMan->getTeams();
@@ -48,9 +44,9 @@ class TeamPresenter extends Nette\Application\UI\Presenter
             $this->template->updatedTeam = NULL;
         }
         
-    }
+    }*/
     
-    public function handledeleteTeam($id)
+    public function handleDeleteTeam($id)
     {
         $teamMan = new TeamManager($this->EntityManager);
         try {
@@ -68,6 +64,12 @@ class TeamPresenter extends Nette\Application\UI\Presenter
         }
     }
     
+    public function handleUpdateTeam($id)
+    {
+        $teamMan = new TeamManager($this->EntityManager);
+        $this->template->updatedTeam = $teamMan->getTeamById($id);
+    }
+
     public function createComponentEditTeamForm()
     {
         $id = $this->request->getParameter('id');

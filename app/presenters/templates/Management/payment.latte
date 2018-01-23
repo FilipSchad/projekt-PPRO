@@ -24,17 +24,23 @@ $( function() {
 <!--
     Content of payments' management
 -->
+{if isset($createPayment)}
+    <h1>Nová platba:</h1>
+    <div id="playerDetail">
+        {control newPaymentForm}
+    </div>
+{else}
+    <div>
+        <a n:href="CreatePayment!">
+            <input type="submit" name="add_new_payment" id="saveButton2" value="Vytvořit novou platbu" />
+        </a>
+    </div>
 {if $selectedPayment}
     <h1>Editovat platbu:</h1>
     <div id="playerDetail">
         {control editPaymentForm}
-    </div>
-{else}
-    <div>
-        <a n:href="Management:createPayment">
-            <input type="submit" name="add_new_payment" id="saveButton2" value="Vytvořit novou platbu" />
-        </a>
-    </div>
+    </div>    
+{/if}
 {/if}
 
 <h1>Platby</h1>            
@@ -63,7 +69,7 @@ $( function() {
                     <td>{$payment->getDueDate()->format('Y-m-d')}</td>
                     <td>{if $payment->getPayedOn()} {$payment->getPayedOn()->format('Y-m-d')}{/if}</td>
                     <td>{$payment->getSeason()->getSeasonName()}</td>
-                    <td><a n:href="deletePayment! $payment->getPaymentId()" onclick="if(!confirm('Chcete opravdu trvale smazat platbu?')){ return false; };">smazat</a></td>
+                    <td><a n:href="DeletePayment! $payment->getPaymentId()" onclick="if(!confirm('Chcete opravdu trvale smazat platbu?')){ return false; };">smazat</a></td>
                 </tr>
             {/foreach}
     </tbody>

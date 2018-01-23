@@ -79,17 +79,8 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         }
     }
     
-    public function renderSeason($id)
+    public function renderSeason()
     {
-        $seasonMan = new SeasonManager($this->EntityManager);
-        if ($id)
-        {
-            $this->template->selectedSeason = $seasonMan->getSeasonById($id);
-        }
-        else
-        {
-            $this->template->selectedSeason = NULL;
-        }
     }
     
     public function createComponentEditPlayerForm()
@@ -162,7 +153,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         }
     }
     
-    public function handledeleteArbiter($id)
+    public function handleDeleteArbiter($id)
     {
        $arbiterMan = new ArbiterManager($this->EntityManager);
         try {
@@ -180,6 +171,11 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         } 
     }
     
+    public function handleCreateArbiter()
+    {
+        $this->template->createArbiter = TRUE;
+    }
+    
     public function handledeletePayment($id)
     {
         $paymentMan = new PaymentManager($this->EntityManager);
@@ -194,6 +190,11 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         }
     }
  
+    public function handleCreatePayment()
+    {
+        $this->template->createPayment = TRUE;
+    }
+
     protected function createComponentNewPaymentForm()
     {
         $payMan = new PaymentManager($this->EntityManager);
@@ -267,13 +268,30 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         }
     }
     
-    public function handlesetActiveSeason($id)
+    public function handleSetActiveSeason($id)
     {
         
     }
     
-    public function handledeleteSeason($id)
+    public function handleDeleteSeason($id)
     {
         
+    }
+    
+    public function handleCreateSeason()
+    {        
+        $this->template->showNewSeasonForm = TRUE;
+    }
+    
+    public function createComponentNewSeasonForm()
+    {
+        $seasonMan = new SeasonManager($this->EntityManager);
+        $form = $seasonMan->getSeasonForm();
+        
+        $form->addSubmit('create_season', 'Vytvořit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'createOrUpdateSeasonFormSucceeded'];
+        return $form;
     }
 }
