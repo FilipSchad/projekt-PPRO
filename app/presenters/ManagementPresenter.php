@@ -69,6 +69,27 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     {
         $arbiterMan = new ArbiterManager($this->EntityManager);
         $this->template->arbiters = $arbiterMan->getArbiters();
+        if ($id)
+        {
+            $this->template->selectedArbiter = $arbiterMan->getArbiterById($id);
+        }
+        else
+        {
+            $this->template->selectedArbiter = NULL;
+        }
+    }
+    
+    public function renderSeason($id)
+    {
+        $seasonMan = new SeasonManager($this->EntityManager);
+        if ($id)
+        {
+            $this->template->selectedSeason = $seasonMan->getSeasonById($id);
+        }
+        else
+        {
+            $this->template->selectedSeason = NULL;
+        }
     }
     
     public function createComponentEditPlayerForm()
@@ -143,7 +164,20 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     
     public function handledeleteArbiter($id)
     {
-        
+       $arbiterMan = new ArbiterManager($this->EntityManager);
+        try {
+            $arbiterMan->deleteArbiterById($id);
+            $this->flashMessage('Rozhodčí byl úspěšně smazán.');
+            $this->redirect('Management:arbiter');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se smazat rozhodčí.', 'error');
+            $this->redirect('Management:arbiter');
+        }
+        catch (\Exception $e) {
+            $this->flashMessage($e->getMessage(), 'error');
+            $this->redirect('Management:arbiter');
+        } 
     }
     
     public function handledeletePayment($id)
@@ -231,5 +265,15 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
             $this->flashMessage('Nepodařilo se updatovat platbu.', 'error');
             $this->redirect('Management:payment');
         }
+    }
+    
+    public function handlesetActiveSeason($id)
+    {
+        
+    }
+    
+    public function handledeleteSeason($id)
+    {
+        
     }
 }

@@ -16,7 +16,18 @@ $(document).ready(function(){
 <!--
     Content of payments' management
 -->
-<div class="addButton">addArbiterButton</div>
+{if $selectedArbiter}
+    <h1>Editovat platbu:</h1>
+    <div id="playerDetail">
+        {control editArbiterForm}
+    </div>
+{else}
+    <div>
+        <a n:href="Management:createArbiter">
+            <input type="submit" name="add_new_arbiter" id="saveButton2" value="Vytvořit rozhodčí" />
+        </a>
+    </div>
+{/if}
 <h1>Rozhodčí</h1>
 <table id="arbiters_table" class="table compact js_table" >
     <thead>
@@ -39,7 +50,7 @@ $(document).ready(function(){
                 <td>{$arbiter->getCity()}</td>
                 <td>{$arbiter->getAddress()}</td>
                 <td>{$arbiter->getPostcode()}</td>
-                <td><a n:href="deleteArbiter! $arbiter->getArbiterId()" onclick="if(!confirm('Chcete opravdu trvale smazat hráče {$arbiter->getName()|noescape} {$arbiter->getSurname()|noescape}?')){ return false; };">smazat</a></td>
+                <td><a n:href="deleteArbiter! $arbiter->getArbiterId()" onclick="if(!confirm('Chcete opravdu trvale smazat rozhodčí {$arbiter->getName()|noescape} {$arbiter->getSurname()|noescape}?')){ return false; };">smazat</a></td>
             </tr>
         {/foreach}
     </tbody>

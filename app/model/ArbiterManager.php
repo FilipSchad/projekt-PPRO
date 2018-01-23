@@ -27,4 +27,11 @@ class ArbiterManager
     {
         return $this->em->find($this::ARBITER_ENTITY, $id);
     }
+    
+    public function deleteArbiterById($id)
+    {
+        $arbiter = $this->em->find($this::ARBITER_ENTITY, $id);
+        $this->em->remove($arbiter);
+        $this->em->flush();
+    }
 }

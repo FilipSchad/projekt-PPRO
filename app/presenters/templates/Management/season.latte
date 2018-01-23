@@ -1,22 +1,46 @@
+{block js}
+{include #parent}
+<script>
+$(document).ready(function(){
+    /* seasons table */
+    $('#seasons_table').dataTable({
+        'bLengthChange': false,
+        'bFilter': false,
+        'bInfo': true,
+        'bSort': true,
+        'bPaginate': false,
+        'aaSorting': [[0, 'asc']],
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní rozhodčí.'}
+    });
+});
+</script>
+{/block}
 {block content}
 <!--
     Content of seasons' management
 -->
 <div>addSeasonButton</div>
 <h1>Sezóny</h1>
-<div class="dataTables_wrapper">​
-    <table id="season_table" class="table js_table">
-        <thead>
+<table id="seasons_table" class="table compact js_table" style="width: 480px; float: left;">
+    <thead>
+        <tr>
+            <th>Sezóna</th>
+            <th>Aktuální</th>
+            <th>Nastavit</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $seasons as $season}
             <tr>
-                <th>Sezóna</th>
-                <th>Aktuální</th>
-                <th>Nastavit</th>
+                <td><a n:href="Management:season $season->getSeasonId()">{$season->getSeasonName()}</a></td>
+                <td>{if $season->getActual()}Ano{/if}</td>
+                <td>{if $season->getActual() == 0}<a n:href="setActiveSeason! $season->getSeasonId()" onclick="if(!confirm('Chcete opravdu nastavit sezónu {$season->getSeasonName()|noescape} jako aktuální?')){ return false; };">aktuální</a>{/if}</td>
+                <td><a n:href="deleteSeason! $season->getSeasonId()" onclick="if(!confirm('Chcete opravdu trvale smazat sezónu {$season->getSeasonName()|noescape}?')){ return false; };">smazat</a></td>
             </tr>
-        </thead>
-        <tbody>
-            seasonTable
-        </tbody>
-    </table>
-</div>
+        {/foreach}
+    </tbody>
+</table>
 <div>addSeasonForm</div>
 {/block}
