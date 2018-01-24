@@ -465,11 +465,22 @@ margin-left:10px;
 	min-height:10px;
 	border: solid 0px #F00;
 	margin-left:20px;
+        margin-bottom: 20px;
+}
+
+.dataTables_filter {
+    margin-bottom: 10px;
 }
 
 .dataTables_filter label {
     width: 100px;
+    color: #FFF;
 }
+
+.dataTables_length label, .dataTables_info {
+    color: #FFF !important;
+}
+
 /* ******************************************* */
 /* Definitions for dataTables */
 /* ******************************************* */

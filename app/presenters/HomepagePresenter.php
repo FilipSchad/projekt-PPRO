@@ -63,7 +63,9 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
         $playerMan = new PlayerManager($this->EntityManager);
         $form = $playerMan->getPlayerForm();
         $form->addSubmit('login', 'Registrovat')
-                ->setAttribute('class', 'submit_button');
+                ->setAttribute('class', 'submit_button')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
         $form->onSuccess[] = [$this, 'registerPlayerFormSucceeded'];
         return $form;
     }
@@ -87,7 +89,9 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
         $teamMan = new TeamManager($this->EntityManager);
         $form = $teamMan->getTeamForm();
         $form->addSubmit('login', 'Registrovat')
-                ->setAttribute('class', 'submit_button');
+                ->setAttribute('class', 'submit_button')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
         $form->onSuccess[] = [$this, 'registerTeamFormSucceeded'];
         return $form;
     }
