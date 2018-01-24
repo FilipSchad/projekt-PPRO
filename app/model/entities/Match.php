@@ -9,7 +9,7 @@ use Kdyby\Doctrine\Entities\BaseEntity;
  * Entita match.
  * @package App\Model\Entities
  * @ORM\Entity
- * @ORM\Table(name="match")
+ * @ORM\Table(name="`match`")
  */
 class Match extends BaseEntity
 {

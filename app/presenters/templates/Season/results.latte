@@ -4,42 +4,52 @@
 $(document).ready(function(){
     /* results table */
     $('#results_table').dataTable({
-        'bLengthChange': false,
-        'iDisplayLength': -1,
-        'bFilter': false,
-        'bInfo': false,
         'bSort': true,
-        'aaSorting': [[2, 'asc'],[5,'asc']],
-        'bPaginate': false,
-        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [1, 2, 3]}],
-        'oLanguage': {'sEmptyTable': 'Nebyly nalezeny žádné odehrané zápasy v této sezóně.'}
+        'aaSorting': [[0,'asc']],
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [0, 1]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeny žádné týmy.'}
     });
+});
 </script>
 {/block}
 {block content}
 <!--
         Template for results of given season
 -->
-
-<h1>{$reqSeason->seasonName}</h1>
-<h3 style="float:left;margin-bottom:0;padding:0;color:#01319d;"><a name="results">Výsledky zápasů sezóny</a></h3> 
-<div class="dataTables_wrapper">​
-                <table id="results_table" class="table js_table" >
-                    <thead>
-                        <tr>
-                            <th>Domácí</th>
-                            <th>Hosté</th>
-                            <th>Kolo</th>
-                            <th>Výsledek</th>
-                            <th>Rozhodčí</th>
-                            <th>Datum zápasu</th>
-                            <th>Sportoviště</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
-                <a>Zobrazit všechny výsledky sezóny</a>
-            </div>
+{if isset($lastRound)}
+<h2 style="margin-bottom: 10px;"><a name="results">Výsledky zápasů {$lastRound}. kola sezóny {$reqSeason->getSeasonName()}</a></h2>
+{else}
+<h2 style="margin-bottom: 10px;"><a name="results">Výsledky zápasů sezóny {$reqSeason->getSeasonName()}</a></h2>
+{/if}
+<table id="results_table" class="display compact js_table" >
+    <thead>
+        <tr>
+            <th>Domácí</th>
+            <th>Hosté</th>
+            <th>Kolo</th>
+            <th>Výsledek</th>
+            <th>Rozhodčí</th>
+            <th>Datum zápasu</th>
+            <th>Sportoviště</th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $matches as $match}
+            <tr>
+                <td>{$match->getHome()->getTeamName()}</td>
+                <td>{$match->getVisitor()->getTeamName()}</td>
+                <td>{$match->getRound()}</td>
+                <td>{$match->getHomeGoals()} : {$match->getVisitorGoals()}</td>
+                <td>{$match->getArbiter()->getName()} {$match->getArbiter()->getSurname()}</td>
+                <td>{$match->getMatchDate()->format('d. m. Y')}</td>
+                <td>{$match->getPlayground()->getPlaygroundName()}</td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+{if isset($lastRound)}
+<a n:href="showAllMatches!" style="color: #FFF; margin-left: 20px;">Zobrazit všechny výsledky sezóny</a>
+{else}
+<a n:href="Season:results $reqSeason->getSeasonId()" style="color: #FFF; margin-left: 20px;">Zobrazit výsledky posledního kola</a>
+{/if}
 {/block}
