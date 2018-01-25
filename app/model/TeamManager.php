@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Nette\Application\UI;
 use App\Model\Entities\Team;
+use App\Model\MatchManager;
 
 /*
  * Player management
@@ -73,4 +74,81 @@ class TeamManager
                 ->setAttribute('placeholder', 'Registrační kód');
         return $form;
     }
+    
+    public function getStatsForTeamAndSeason($team,$season, $matchMan) {
+        $stat = array (
+            'playedMatches'  => 0,
+            'wins'           => 0,
+            'loses'          => 0,
+            'draws'          => 0,
+            'shooted_goals'  => 0,
+            'released_goals' => 0,
+            'points'         => 0,
+            'score'          => 0,
+        );
+        
+        $homeMatches = $matchMan->getHomeMatchesForTeamAndSeason($team,$season);
+        foreach ($homeMatches as $match) {
+            if ($match->getHomeGoals() > $match->getVisitorGoals()) {
+                $stat['wins'] += 1;
+                $stat['points'] += 3;
+                //$points += 3;
+            } elseif ($match->getHomeGoals() == $match->getVisitorGoals()) {
+                $stat['draws'] += 1;
+                $stat['points'] += 1;
+                //$points += 1;
+            } else {
+                $stat['loses'] += 1;
+            }
+            $stat['playedMatches'] += 1;
+            $stat['shooted_goals'] += $match->getHomeGoals();
+            $stat['released_goals'] += $match->getVisitorGoals();
+        }
+        
+        $visitorMatches = $matchMan->getVisitorMatchesForTeamAndSeason($team,$season);
+        foreach ($visitorMatches as $match) {
+            if ($match->getHomeGoals() < $match->getVisitorGoals()) {
+                $stat['wins'] += 1;
+                $stat['points'] += 3;
+                //$points += 3;
+            } elseif ($match->getHomeGoals() == $match->getVisitorGoals()) {
+                $stat['draws'] += 1;
+                $stat['points'] += 1;
+                //$points += 1;
+            } else {
+                $stat['loses'] += 1;
+            }
+            $stat['playedMatches'] += 1;
+            $stat['shooted_goals'] += $match->getVisitorGoals();
+            $stat['released_goals'] += $match->getHomeGoals();
+        }
+        $stat['score'] = $stat['shooted_goals'] - $stat['released_goals'];
+        return $stat;
+    }
+    
+    public function getStatsTable($season)
+    {
+        $teams = $this->getTeams();
+        $matchMan = new MatchManager($this->em);
+        $statTable = array();
+        foreach ($teams as $team) {
+            $teamStat = $this->getStatsForTeamAndSeason($team, $season, $matchMan);
+            $teamStat['teamName'] = $team->getTeamName();
+            array_push($statTable, $teamStat);
+        }
+        
+        usort($statTable, "App\Model\TeamManager::sortTeamOrder");
+        return $statTable;
+    }
+    
+    public static function sortTeamOrder($a, $b)
+    {
+    if ($a['points'] == $b['points']) {
+        if ($a['score'] == $b['score']) {
+            return 0;
+        }
+        return ($a['score'] < $b['score']) ? 1 : -1;
+    }
+    return ($a['points'] < $b['points']) ? 1 : -1;
+}
 }

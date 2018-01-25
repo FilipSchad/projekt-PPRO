@@ -1,0 +1,114 @@
+{block js}
+{include #parent}
+<script>
+$(document).ready(function(){
+    /* rank table */
+    $('#rank_table').dataTable({
+        'bSort': true,
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [0, 1]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeny žádné týmy.'}
+    });
+    
+    /* shooters table */
+    $('#shooters_table').dataTable({
+        'bSort': true,
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [0, 1]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní střelci.'}
+    });
+    
+    /* shooters table */
+    $('#goalkeepers_table').dataTable({
+        'bSort': true,
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [0, 1]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní brankáři.'}
+    });
+});
+</script>
+{/block}
+{block content}
+<!--
+        Template for schedule of given season
+-->
+<h2 style="margin-bottom: 10px;"><a name="results">Pořadí týmů</a></h2>
+<table id="rank_table" class="display compact js_table" >
+    <thead>
+        <tr>
+            <th>Umístění</th>
+            <th>Tým</th>
+            <th>Počet zápasů</th>
+            <th>Výhry</th>
+            <th>Remízy</th>
+            <th>Prohry</th>
+            <th>Vstřelené góly</th>
+            <th>Obdržené góly</th>
+            <th>Skóre</th>
+            <th>Body</th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $statsTable as $row}
+            <tr>
+                <td>{$iterator->getCounter()}.</td>
+                <td>{$row['teamName']}</td>
+                <td>{$row['playedMatches']}</td>
+                <td>{$row['wins']}</td>
+                <td>{$row['draws']}</td>
+                <td>{$row['loses']}</td>
+                <td>{$row['shooted_goals']}</td>
+                <td>{$row['released_goals']}</td>
+                <td>{$row['score']}</td>
+                <td>{$row['points']}</td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+        
+<h2 style="margin-bottom: 10px;"><a name="results">Pořadí střelců</a></h2>
+<table id="shooters_table" class="display compact js_table">
+    <thead>
+        <tr>
+            <th>Umístění</th>
+            <th>Jméno</th>
+            <th>Tým</th>
+            <th>Počet gólů</th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $shootersTable as $row}
+            <tr>
+                <td>{$iterator->getCounter()}.</td>
+                <td>{$row['player']->getName()} {$row['player']->getSurname()}</td>
+                <td>{$row['player']->getTeam()->getTeamName()}</td>
+                <td>{$row['goals']}</td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+    
+<h2 style="margin-bottom: 10px;"><a name="results">Pořadí brankářů</a></h2>
+<table id="goalkeepers_table" class="display compact js_table">
+    <thead>
+        <tr>
+            <th>Umístění</th>
+            <th>Jméno</th>
+            <th>Tým</th>
+            <th>Počet zápasů</th>
+            <th>Počet obdržených gólů</th>
+            <th>Průměr na zápas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $goalkeepersTable as $row}
+            <tr>
+                <td>{$iterator->getCounter()}.</td>
+                <td>{$row['player']->getName()} {$row['player']->getSurname()}</td>
+                <td>{$row['player']->getTeam()->getTeamName()}</td>
+                <td>{$row['matchCount']}</td>
+                <td>{$row['released']}</td>
+                <td>{$row['average']}</td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+        
+{/block}
