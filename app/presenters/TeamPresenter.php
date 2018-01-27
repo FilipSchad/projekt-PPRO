@@ -31,21 +31,6 @@ class TeamPresenter extends Nette\Application\UI\Presenter
         }
     }
     
-    /*public function renderUpdate($id)
-    {
-    $teamMan = new TeamManager($this->EntityManager);
-        $this->template->teams = $teamMan->getTeams();
-        if ($id)
-        {
-            $this->template->updatedTeam = $teamMan->getTeamById($id);
-        }
-        else
-        {
-            $this->template->updatedTeam = NULL;
-        }
-        
-    }*/
-    
     public function handleDeleteTeam($id)
     {
         $teamMan = new TeamManager($this->EntityManager);
@@ -83,7 +68,7 @@ class TeamPresenter extends Nette\Application\UI\Presenter
         $form->addSubmit('save_team', 'Uložit')
                 ->setAttribute('id', 'saveButton')
                 ->setAttribute('style', 'float:left;border:0;width:197px;');
-        $form->onSuccess[] = [$this, 'editTeamFormSucceeded'];
+        //$form->onSuccess[] = [$this, 'editTeamFormSucceeded'];
         $form->getComponent('team_name')->setValue($selectedTeam->getTeamName());
         $form->getComponent('owner_name')->setValue($selectedTeam->getOwnerName());
         $form->getComponent('owner_surname')->setValue($selectedTeam->getOwnerSurname());
