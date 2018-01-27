@@ -31,8 +31,8 @@ class PlaygroundManager
     
     public function deletePlaygroundById($id)
     {
-        $playgournd = $this->em->find($this::PLAYGROUND_ENTITY, $id);
-        $this->em->remove($playgournd);
+        $playground = $this->em->find($this::PLAYGROUND_ENTITY, $id);
+        $this->em->remove($playground);
         $this->em->flush();
     }
     
