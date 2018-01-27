@@ -270,12 +270,24 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     
     public function handleSetActiveSeason($id)
     {
-        
+        $seasonMan = new SeasonManager($this->EntityManager);
+        $seasonMan->setActualSeason($seasonMan->getSeasonById($id));
+        $this->flashMessage('Nastavena aktivní sezóna ' . $seasonMan->getActualSeason()->getSeasonName(), 'info');
+        $this->redirect('Management:season');
     }
     
     public function handleDeleteSeason($id)
     {
-        
+        $seasMan = new SeasonManager($this->EntityManager);
+        try {
+            $seasMan->deleteSeasonById($id);
+            $this->flashMessage('Sezóna byla úspěšně smazána.');
+            $this->redirect('Management:season');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se smazat sezónu.', 'error');
+            $this->redirect('Management:season');
+        }
     }
     
     public function handleCreateSeason()
@@ -291,7 +303,26 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $form->addSubmit('create_season', 'Vytvořit')
                 ->setAttribute('id', 'saveButton')
                 ->setAttribute('style', 'float:left;border:0;width:197px;');
-        $form->onSuccess[] = [$this, 'createOrUpdateSeasonFormSucceeded'];
+        $form->onSuccess[] = [$this, 'createSeasonFormSucceeded'];
         return $form;
+    }
+    
+    public function createSeasonFormSucceeded($form)
+    {
+        $seasMan = new SeasonManager($this->EntityManager);
+        $seasonName = $form->getValues()['name'];
+        try {
+            $ns = new \App\Model\Entities\Season();
+            $ns->setSeasonName($seasonName);
+            $ns->setActual(0);
+            $this->EntityManager->persist($ns);
+            $this->EntityManager->flush();
+            $this->flashMessage('Sezńa byla úspěšně vytvořena.', 'info');  
+            $this->redirect('Management:season');
+        }
+        catch (Exception $ex) {
+            $this->flashMessage('Nepodařilo se vytvořit sezónu.', 'error');
+            $this->redirect('Management:season');
+        }
     }
 }

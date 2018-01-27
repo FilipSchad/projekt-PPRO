@@ -29,11 +29,29 @@ class SeasonManager
         return $this->em->find('\App\Model\Entities\Season', $id);
     }
     
+    public function deleteSeasonById($id)
+    {
+        $season = $this->em->find($this::SEASON_ENTITY, $id);
+        $this->em->remove($season);
+        $this->em->flush();
+    }
+    
     public function getActualSeason()
     {
         return $this->em->getRepository($this::SEASON_ENTITY)->findOneBy(array('actual' => 1));
     }
     
+    public function setActualSeason($season)
+    {
+        $actual = $this->getActualSeason();
+        $actual->setActual(0);
+        $season->setActual(1);
+        $this->em->persist($actual);
+        $this->em->persist($season);
+        $this->em->flush();
+    }
+
+
     public function getSeasonForm()
     {
         $form = new UI\Form;
