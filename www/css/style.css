@@ -170,9 +170,7 @@ p{
 }
 
 #center_content strong{
-	float:left;
-	margin-left:20px;	
-	color: #fff;
+	display: block;
 }
 
 
@@ -358,7 +356,6 @@ margin-left:10px;
 	width:349px;
 	min-height: 30px;
 	margin-bottom:16px;
-	border: solid 1px #4971c9;
 }
 
 .boxes h3{
@@ -377,7 +374,6 @@ margin-left:10px;
 	float:left;
 	color: #fff;
 	width: 100px;
-	border: solid 1px #fff;
 }
 
 
@@ -442,11 +438,9 @@ margin-left:10px;
 }
 
 .table_content_boxes table tr {
-	height:25px;
+	height:30px;
 	background: url(../img/bg_table_tr.gif) repeat-x bottom;
 }
-
-
 
 .bottom_content_boxes{
 	float:left;

@@ -7,6 +7,8 @@ use Nette\Application\UI\Form;
 use App\Model\PlayerManager;
 use App\Model\SeasonManager;
 use App\Model\TeamManager;
+use App\Model\MatchManager;
+use App\Model\MatchParticipantManager;
 use App\Model\Entities\Team;
 
 class HomepagePresenter extends Nette\Application\UI\Presenter
@@ -28,8 +30,24 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
         }
         $seasonMan = new SeasonManager($this->EntityManager);
         $this->template->seasons = $seasonMan->getSeasons();
+        $this->template->actualSeason = $seasonMan->getActualSeason();
     }
       
+    public function renderDefault()
+    {
+        $matchMan = new MatchManager($this->EntityManager);
+        $this->template->lastRound = $matchMan->getLastRoundForSeason($this->template->actualSeason);
+        $this->template->lastMatches = array_slice(
+                $matchMan->getLastRoundMatchesForSeason($this->template->actualSeason),
+                0,
+                5);
+        $teamMan = new TeamManager($this->EntityManager);
+        $this->template->topFive = $teamMan->getTopFiveForSeason($this->template->actualSeason);
+        $matchpMan = new MatchParticipantManager($this->EntityManager);
+        $this->template->shooters = $matchpMan->getShooterStatForSeason($this->template->actualSeason);        
+        
+    }
+    
     protected function createComponentSignInForm()
     {
         $form = new Form;

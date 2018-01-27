@@ -141,6 +141,12 @@ class TeamManager
         return $statTable;
     }
     
+    public function getTopFiveForSeason($season)
+    {
+        return array_slice($this->getStatsTable($season), 0, 5);
+    }
+
+
     public static function sortTeamOrder($a, $b)
     {
     if ($a['points'] == $b['points']) {

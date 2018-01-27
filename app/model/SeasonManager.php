@@ -11,6 +11,8 @@ use App\Model\Entities\Season;
 
 class SeasonManager
 {
+    const SEASON_ENTITY = '\App\Model\Entities\Season';
+    
     public function __construct(\Kdyby\Doctrine\EntityManager $em)
     {
         $this->em = $em;
@@ -25,6 +27,11 @@ class SeasonManager
     public function getSeasonById($id)
     {
         return $this->em->find('\App\Model\Entities\Season', $id);
+    }
+    
+    public function getActualSeason()
+    {
+        return $this->em->getRepository($this::SEASON_ENTITY)->findOneBy(array('actual' => 1));
     }
     
     public function getSeasonForm()

@@ -41,12 +41,18 @@ $( function() {
             </div>
 
             <div class="table_content_boxes">
-                
-                    <table cellpadding="0" cellspacing="0">
-                    Poslední zápasy
-                	</table>
-
-                <em> <a href="" title="Zobrazit celou tabulku">Zobrazit celou tabulku</a></em>
+                <table cellpadding="0" cellspacing="0">
+                    {if !empty($lastMatches)}
+                        {foreach $lastMatches as $row}
+                            <tr>
+                                <td>{$iterator->getCounter()}.</td>
+                                <td>{$row->getHome()->getTeamName()} : {$row->getVisitor()->getTeamName()}</td>
+                                <td>{$row->getHomeGoals()} : {$row->getVisitorGoals()}</td>
+                            </tr>
+                        {/foreach}
+                    {/if}
+                </table>
+                <em> <a n:href="Season:results $actualSeason->getSeasonId()" title="Zobrazit celou tabulku">Zobrazit celou tabulku</a></em>
 
             </div>
 
@@ -70,11 +76,17 @@ $( function() {
 
             <div class="table_content_boxes">
                 <table cellpadding="0" cellspacing="0">
-                    topFive
-                          
+                    {if !empty($topFive)}
+                        {foreach $topFive as $row}
+                            <tr>
+                                <td>{$iterator->getCounter()}.</td>
+                                <td>{$row['teamName']}</td>
+                                <td>{$row['points']} bodů</td>
+                            </tr>
+                        {/foreach}
+                    {/if}   
                 </table>
-
-                <em><a href="" title="Zobrazit celou tabulku">Zobrazit celou tabulku</a></em>
+                <em><a n:href="Season:tables $actualSeason->getSeasonId()" title="Zobrazit celou tabulku">Zobrazit celou tabulku</a></em>
 
             </div>
 
@@ -100,26 +112,23 @@ $( function() {
             <div class="table_content_boxes">                             
 
                 <div id="table_player">
-
-                    <img src="" alt="Nejlepší hráč sezóny" />
-
                     <table cellpadding="0" cellspacing="0">
                         <tr>
                             <td>
-                                <strong>Jméno a příjmení:</strong><br />
-                                bestShooterName
+                                <strong>Jméno a příjmení:</strong>
+                                <div style="margin: 10px;">{if !empty($shooters)}{$shooters[0]['player']->getName()} {$shooters[0]['player']->getSurname()}{/if}</div>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>Počet vstřelených branek:</strong><br />
-                                bestShooterScore
+                                <strong>Počet vstřelených branek:</strong>
+                                <div style="margin: 10px;">{if !empty($shooters)}{$shooters[0]['goals']}{/if}</div>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>Hraje za tým:</strong><br />
-                                bestShooterTeam
+                                <strong>Hraje za tým:</strong>
+                                <div style="margin: 10px;">{if !empty($shooters)}{$shooters[0]['player']->getTeam()->getTeamName()}{/if}</div>
                             </td>
                         </tr>
                     </table>
