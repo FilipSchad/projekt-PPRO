@@ -47,7 +47,10 @@ $( function() {
                             <tr>
                                 <td>{$iterator->getCounter()}.</td>
                                 <td>{$row->getHome()->getTeamName()} : {$row->getVisitor()->getTeamName()}</td>
-                                <td>{$row->getHomeGoals()} : {$row->getVisitorGoals()}</td>
+                                <td>{if !$row->getHomeGoals()}0{else}{$row->getHomeGoals()}{/if} 
+                                        :
+                                    {if !$row->getVisitorGoals()}0{else}{$row->getVisitorGoals()}{/if}
+                                </td>
                             </tr>
                         {/foreach}
                     {/if}

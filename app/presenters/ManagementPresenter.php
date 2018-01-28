@@ -9,6 +9,8 @@ use App\Model\PlayerManager;
 use App\Model\TeamManager;
 use App\Model\PaymentManager;
 use App\Model\ArbiterManager;
+use App\Model\MatchManager;
+use App\Model\MatchParticipantManager;
 
 class ManagementPresenter extends Nette\Application\UI\Presenter
 {
@@ -48,7 +50,6 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         {
             $this->template->selectedPlayer = NULL;
         }
-        
     }
     
     public function renderPayment($id)
@@ -91,7 +92,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         
         $form = $playerMan->getPlayerForm();
         $form->addText('registration_date', 'Datum registrace:')
-                ->setValue($selectedPlayer->getRegistrationDate()->format('Y-m-d'))
+                ->setValue($selectedPlayer->getRegistrationDate()->format('d. m. Y'))
                 ->setAttribute('readonly');
         $form->addSubmit('save_team', 'Uložit')
                 ->setAttribute('id', 'saveButton')
@@ -99,7 +100,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $form->onSuccess[] = [$this, 'editPlayerFormSucceeded'];
         $form->getComponent('name')->setValue($selectedPlayer->getName());
         $form->getComponent('surname')->setValue($selectedPlayer->getSurname());
-        $form->getComponent('birthdate')->setValue($selectedPlayer->getBirthDate()->format('Y-m-d'));
+        $form->getComponent('birthdate')->setValue($selectedPlayer->getBirthDate()->format('d. m. Y'));
         $form->getComponent('address')->setValue($selectedPlayer->getAddress());
         $form->getComponent('city')->setValue($selectedPlayer->getCity());
         $form->getComponent('postcode')->setValue($selectedPlayer->getPostcode());
@@ -174,6 +175,65 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     public function handleCreateArbiter()
     {
         $this->template->createArbiter = TRUE;
+    }
+    
+    public function createComponentNewArbiterForm()
+    {
+        $arbiterMan = new ArbiterManager($this->EntityManager);
+        $form = $arbiterMan->getArbiterForm();
+        $form->addSubmit('create_arbiter', 'Vytvořit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'createArbiterFormSucceeded'];
+        return $form;
+    }
+
+    public function createComponentEditArbiterForm()
+    {
+        $id = $this->request->getParameter('id');
+        $arbiterMan = new ArbiterManager($this->EntityManager);
+        $selectedArbiter = $arbiterMan->getArbiterById($id);
+        
+        $form = $arbiterMan->getArbiterForm();
+        $form->addSubmit('save_arbiter', 'Uložit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'editArbiterFormSucceeded'];
+        $form->getComponent('name')->setValue($selectedArbiter->getName());
+        $form->getComponent('surname')->setValue($selectedArbiter->getSurname());
+        $form->getComponent('address')->setValue($selectedArbiter->getAddress());
+        $form->getComponent('city')->setValue($selectedArbiter->getCity());
+        $form->getComponent('postcode')->setValue($selectedArbiter->getPostcode());
+        $form->getComponent('email')->setValue($selectedArbiter->getEmail());
+        $form->getComponent('phone')->setValue($selectedArbiter->getPhone());
+        return $form;
+    }
+    
+    public function createArbiterFormSucceeded($form)
+    {
+        $arbiterMan = new ArbiterManager($this->EntityManager);
+        if($arbiterMan->createOrUpdateArbiterFromForm($form, 0)) {
+            $this->flashMessage('Rozhodčí byl úspěšně vytvořen.', 'info');  
+            $this->redirect('Management:arbiter');
+        }
+        else {
+            $this->flashMessage('Nepodařilo se vytvořit rozhodčí.', 'error');
+            $this->redirect('Management:arbiter');
+        }
+    }
+    
+    public function editArbiterFormSucceeded($form)
+    {
+        $id = $this->request->getParameter('id');
+        $arbiterMan = new ArbiterManager($this->EntityManager);
+        if($arbiterMan->createOrUpdateArbiterFromForm($form, $id)) {
+            $this->flashMessage('Rozhodčí byl úspěšně updatován.', 'info');  
+            $this->redirect('Management:arbiter');
+        }
+        else {
+            $this->flashMessage('Nepodařilo se updatovat rozhodčího.', 'error');
+            $this->redirect('Management:arbiter');
+        }
     }
     
     public function handledeletePayment($id)
@@ -323,6 +383,217 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         catch (Exception $ex) {
             $this->flashMessage('Nepodařilo se vytvořit sezónu.', 'error');
             $this->redirect('Management:season');
+        }
+    }
+    
+    public function renderMatch($id)
+    {
+        $matchMan = new MatchManager($this->EntityManager);
+        $this->template->matches = $matchMan->getMatches();
+        
+        if ($id)
+        {
+            $this->template->selectedMatch = $matchMan->getMatchById($id);
+            $matchpMan = new MatchParticipantManager($this->EntityManager);
+            //Get home players for selected match
+            $this->template->selHomePlayers = $matchpMan->getMatchParticipantsByArray(
+                    array(
+                        'match' => $this->template->selectedMatch,
+                        'team'  => $this->template->selectedMatch->getHome(),
+                        'season'  => $this->template->selectedMatch->getSeason()
+                    ));
+            //Get visitor players for selected match
+            $this->template->selVisitorPlayers = $matchpMan->getMatchParticipantsByArray(
+                    array(
+                        'match' => $this->template->selectedMatch,
+                        'team'  => $this->template->selectedMatch->getVisitor(),
+                        'season'  => $this->template->selectedMatch->getSeason()
+                    ));
+        }
+        else
+        {
+            $this->template->selectedMatch = NULL;
+        }
+    }
+    
+    public function handleCreateMatch()
+    {
+        $this->template->createMatch = TRUE;
+    }
+    
+    public function createComponentNewMatchForm()
+    {
+        $matchMan = new MatchManager($this->EntityManager);
+        $form = $matchMan->getMatchForm();
+        $form->addSubmit('create_match', 'Vytvořit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'createMatchFormSucceeded'];
+        return $form;
+    }
+    
+    public function createMatchFormSucceeded($form)
+    {
+        $matchMan = new MatchManager($this->EntityManager);
+        if($matchMan->createOrUpdateMatchFromForm($form, 0)) {
+            $this->flashMessage('Zápas byl úspěšně vytvořen.', 'info');  
+            $this->redirect('Management:match');
+        }
+        else {
+            $this->flashMessage('Nepodařilo se vytvořit zápas.', 'error');
+            $this->redirect('Management:match');
+        }
+    }
+    
+    public function editMatchFormSucceeded($form)
+    {
+        $id = $this->request->getParameter('id');
+        $matchMan = new MatchManager($this->EntityManager);
+        if($matchMan->createOrUpdateMatchFromForm($form, $id)) {
+            $this->flashMessage('Zápas byl úspěšně updatován.', 'info');  
+            $this->redirect('Management:match');
+        }
+        else {
+            $this->flashMessage('Nepodařilo se updatovat zápas.', 'error');
+            $this->redirect('Management:match');
+        }
+    }
+    
+    public function createComponentEditMatchForm()
+    {
+        $id = $this->request->getParameter('id');
+        $matchMan = new MatchManager($this->EntityManager);
+        $selectedMatch = $matchMan->getMatchById($id);
+        
+        $form = $matchMan->getMatchForm();
+        $form->addSubmit('save_match', 'Uložit')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->getComponent('home_id')->setValue($selectedMatch->getHome()->getTeamId());
+        $form->getComponent('visitor_id')->setValue($selectedMatch->getVisitor()->getTeamId());
+        $form->getComponent('season_id')->setValue($selectedMatch->getSeason()->getSeasonId());
+        $form->getComponent('round')->setValue($selectedMatch->getRound());
+        $form->getComponent('arbiter_id')->setValue($selectedMatch->getArbiter()->getArbiterId());
+        $form->getComponent('playground_id')->setValue($selectedMatch->getPlayground()->getPlaygroundId());
+        $form->getComponent('matchdate')->setValue($selectedMatch->getMatchDate()->format('d. m. Y'));
+        $form->getComponent('played')->setValue($selectedMatch->getPlayed());
+        $form->onSuccess[] = [$this, 'editMatchFormSucceeded'];
+        return $form;
+    }
+    
+    public function createComponentAddHomePlayerForm()
+    {
+        
+        $id = $this->request->getParameter('id');
+        $matchMan = new MatchManager($this->EntityManager);
+        $selectedMatch = $matchMan->getMatchById($id);
+        
+        $teamMan = new TeamManager($this->EntityManager);
+        $form = $teamMan->getAddPlayerForm($selectedMatch->getHome());
+        $form->addSubmit('add_home_player', 'Přidat hráče')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'addHomePlayerFormSucceeded'];
+        return $form;
+    }
+    
+    public function addHomePlayerFormSucceeded($form)
+    {
+        $id = $this->request->getParameter('id');
+        $matchpMan = new MatchParticipantManager($this->EntityManager);
+        if($matchpMan->addParticipantFromForm($form, $id, "home")) {
+            $this->flashMessage('Hráč byl úspěšně přidán do zápasu.', 'info');  
+            $this->redirect('Management:match', $id);
+        }
+        else {
+            $this->flashMessage('Nepodařilo se přidat hráče do zápasu.', 'error');
+            $this->redirect('Management:match', $id);
+        }
+    }
+
+    public function addVisitorPlayerFormSucceeded($form)
+    {
+        $id = $this->request->getParameter('id');
+        $matchpMan = new MatchParticipantManager($this->EntityManager);
+        if($matchpMan->addParticipantFromForm($form, $id, "visitor")) {
+            $this->flashMessage('Hráč byl úspěšně přidán do zápasu.', 'info');  
+            $this->redirect('Management:match', $id);
+        }
+        else {
+            $this->flashMessage('Nepodařilo se přidat hráče do zápasu.', 'error');
+            $this->redirect('Management:match', $id);
+        }
+    }
+    
+    public function createComponentAddVisitorPlayerForm()
+    {
+        
+        $id = $this->request->getParameter('id');
+        $matchMan = new MatchManager($this->EntityManager);
+        $selectedMatch = $matchMan->getMatchById($id);
+        
+        $teamMan = new TeamManager($this->EntityManager);
+        $form = $teamMan->getAddPlayerForm($selectedMatch->getVisitor());
+        $form->addSubmit('add_visitor_player', 'Přidat hráče')
+                ->setAttribute('id', 'saveButton')
+                ->setAttribute('style', 'float:left;border:0;width:197px;');
+        $form->onSuccess[] = [$this, 'addVisitorPlayerFormSucceeded'];
+        return $form;
+    }
+    
+    public function handleDeleteMatch($id)
+    {
+        $matchMan = new MatchManager($this->EntityManager);
+        try {
+            $matchMan->deleteMatchById($id);
+            $this->flashMessage('Zápas byl úspěšně smazán.');
+            $this->redirect('Management:match');
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se smazat zápas.', 'error');
+            $this->redirect('Management:match');
+        }
+        catch (\Exception $e) {
+            $this->flashMessage($e->getMessage(), 'error');
+            $this->redirect('Management:match');
+        }
+    }
+    
+    public function handleDeleteHomePlayer($id)
+    {
+        $matchpMan = new MatchParticipantManager($this->EntityManager);
+        $matchp = $matchpMan->getMatchParticipantById($id);
+        $match = $matchp->getMatch();
+        try {
+            if ($matchp->getGoals()) {
+                $match->setHomeGoals($match->getHomeGoals() - $matchp->getGoals());
+            }
+            $matchpMan->deleteMatchParticipantById($id);
+            $this->flashMessage('Hráč byl úspěšně odebrán ze zápasu');
+            $this->redirect('Management:match', $match->getMatchId());
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se odebrat hráče.', 'error');
+            $this->redirect('Management:match', $match->getMatchId());
+        }
+    }
+    
+    public function handleDeleteVisitorPlayer($id)
+    {
+        $matchpMan = new MatchParticipantManager($this->EntityManager);
+        $matchp = $matchpMan->getMatchParticipantById($id);
+        $match = $matchp->getMatch();
+        try {
+            if ($matchp->getGoals()) {
+                $match->setVisitorGoals($match->getVisitorGoals() - $matchp->getGoals());
+            }
+            $matchpMan->deleteMatchParticipantById($id);
+            $this->flashMessage('Hráč byl úspěšně odebrán ze zápasu');
+            $this->redirect('Management:match', $match->getMatchId());
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+            $this->flashMessage('Nepodařilo se odebrat hráče.', 'error');
+            $this->redirect('Management:match', $match->getMatchId());
         }
     }
 }

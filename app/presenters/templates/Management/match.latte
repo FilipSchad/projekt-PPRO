@@ -1,0 +1,163 @@
+{block js}
+{include #parent}
+<script>
+$(document).ready(function(){
+    /* results table */
+    $('#results_table').dataTable({
+        'bSort': true,
+        'aaSorting': [[0,'asc']],
+        'aoColumnDefs': [{'sClass': 'centered_cells', 'aTargets': [0, 1]}],
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeny žádné výsledky.'}
+    });
+    
+    /* home table */
+    $('#home_table').dataTable({
+        'bLengthChange': false,
+        'iDisplayLength': -1,
+        'bFilter': false,
+        'bInfo': false,
+        'bSort': true,
+        'aaSorting': [[0, 'asc']],
+        'bPaginate': false,
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní hráči v tomto zápase.'}
+    });
+    
+    /* visitor table */
+    $('#visitor_table').dataTable({
+        'bLengthChange': false,
+        'iDisplayLength': -1,
+        'bFilter': false,
+        'bInfo': false,
+        'bSort': true,
+        'aaSorting': [[0, 'asc']],
+        'bPaginate': false,
+        'oLanguage': {'sEmptyTable': 'Nebyli nalezeni žádní hráči v tomto zápase.'}
+    });
+});
+
+$( function() {
+    $( ".date_matchdate" ).datepicker({ changeYear: true, changeMonth: true });
+  } );
+</script>
+{/block}
+{block content}
+<!--
+    Content of payments' management
+-->
+{if isset($createMatch)}
+    <h1>Nový zápas:</h1>
+    <div id="playerDetail">
+        {control newMatchForm}
+    </div>
+{else}
+    <div>
+        <a n:href="CreateMatch!">
+            <input type="submit" name="add_new_match" id="saveButton2" value="Vytvořit zápas" />
+        </a>
+    </div>
+{if $selectedMatch}
+    <h1>Editovat zápas {$selectedMatch->getHome()->getTeamName()} vs. {$selectedMatch->getVisitor()->getTeamName()}:</h1>
+    <div id="playerDetail">
+        {control editMatchForm}
+    </div>
+    <h2>Hráči týmu {$selectedMatch->getHome()->getTeamName()}</h2>
+    <div id="playerDetail">
+        {control addHomePlayerForm}
+    </div>
+    <table id="home_table" class="display compact js_table" style="float: left; width: auto">
+        <thead>
+            <tr>
+                <th>Jméno hráče</th>
+                <th>Dal gólů</th>
+                <th>Červená karta</th>
+                <th>Žlutá karta</th>
+                <th>Brankář</th>
+                <th>Dostal gólů</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach $selHomePlayers as $player}
+            <tr>
+                <td>{$player->getPlayer()->getName()} {$player->getPlayer()->getSurname()}</td>
+                <td>{$player->getGoals()}</td>
+                <td>{if $player->getRedCard()}ano{/if}</td>
+                <td>{if $player->getYellowCard()}ano{/if}</td>
+                <td>{if $player->getIsKeeper()}ano{/if}</td>
+                <td>{if $player->getIsKeeper()}{$player->getReleasedGoals()}{/if}</td>
+                <td><a n:href="DeleteHomePlayer! $player->getMatchParticipantId()" onclick="if(!confirm('Chcete opravdu odstranit hráče {$player->getPlayer()->getName()|noescape} {$player->getPlayer()->getSurname()|noescape} ze zápasu?')){ return false; };">Smazat</td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    <h2>Hráči týmu {$selectedMatch->getVisitor()->getTeamName()}</h2>
+    <div id="playerDetail">
+        {control addVisitorPlayerForm}
+    </div>
+    <table id="visitor_table" class="display compact js_table" style="float: left; width: auto">
+        <thead>
+            <tr>
+                <th>Jméno hráče</th>
+                <th>Dal gólů</th>
+                <th>Červená karta</th>
+                <th>Žlutá karta</th>
+                <th>Brankář</th>
+                <th>Dostal gólů</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach $selVisitorPlayers as $player}
+            <tr>
+                <td>{$player->getPlayer()->getName()} {$player->getPlayer()->getSurname()}</td>
+                <td>{$player->getGoals()}</td>
+                <td>{if $player->getRedCard()}ano{/if}</td>
+                <td>{if $player->getYellowCard()}ano{/if}</td>
+                <td>{if $player->getIsKeeper()}ano{/if}</td>
+                <td>{if $player->getIsKeeper()}{$player->getReleasedGoals()}{/if}</td>
+                <td><a n:href="DeleteVisitorPlayer! $player->getMatchParticipantId()" onclick="if(!confirm('Chcete opravdu odstranit hráče {$player->getPlayer()->getName()|noescape} {$player->getPlayer()->getSurname()|noescape} ze zápasu?')){ return false; };">Smazat</td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+{/if}
+{/if}
+
+<table id="results_table" class="display compact js_table" >
+    <thead>
+        <tr>
+            <th>Domácí</th>
+            <th>Hosté</th>
+            <th>Sezóna</th>
+            <th>Kolo</th>
+            <th>Výsledek</th>
+            <th>Rozhodčí</th>
+            <th>Datum zápasu</th>
+            <th>Sportoviště</th>
+            <th>Odehráno</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $matches as $match}
+            <tr>
+                <td>{$match->getHome()->getTeamName()}</td>
+                <td>{$match->getVisitor()->getTeamName()}</td>
+                <td>{$match->getSeason()->getSeasonName()}</td>
+                <td>{$match->getRound()}</td>
+                <td>{if !$match->getHomeGoals()}0{else}{$match->getHomeGoals()}{/if} 
+                    :
+                    {if !$match->getVisitorGoals()}0{else}{$match->getVisitorGoals()}{/if}
+                </td>
+                <td>{$match->getArbiter()->getName()} {$match->getArbiter()->getSurname()}</td>
+                <td>{$match->getMatchDate()->format('d. m. Y')}</td>
+                <td>{$match->getPlayground()->getPlaygroundName()}</td>
+                <td>{if $match->getPlayed()}ano{else}ne{/if}</td>
+                <td><a n:href="Management:match $match->getMatchId()">Upravit</td>
+                <td><a n:href="DeleteMatch! $match->getMatchId()" onclick="if(!confirm('Chcete opravdu trvale smazat zápas {$match->getHome()->getTeamName()|noescape} vs. {$match->getVisitor()->getTeamName()|noescape}?')){ return false; };">Smazat</td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+{/block}

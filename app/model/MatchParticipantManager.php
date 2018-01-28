@@ -24,6 +24,11 @@ class MatchParticipantManager
         return $this->em->getRepository($this::MATCHP_ENTITY)->findBy(array());
     }
     
+    public function getMatchParticipantsByArray($input)
+    {
+        return $this->em->getRepository($this::MATCHP_ENTITY)->findBy($input);
+    }
+    
     public function getMatchParticipantById($id)
     {
         return $this->em->find($this::MATCHP_ENTITY, $id);
@@ -91,7 +96,55 @@ class MatchParticipantManager
         }
         return $ret;
     }
-
+    
+    public function addParticipantFromForm($form, $matchId, $partType)
+    {
+        try {
+            $matchp = new MatchParticipant();
+            $values = $form->getValues();
+            $playerMan = new PlayerManager($this->em);
+            $matchMan = new MatchManager($this->em);
+            $player = $playerMan->getPlayerById($values['player_id']);
+            $match = $matchMan->getMatchById($matchId);
+            $matchp->setPlayer($player);
+            $matchp->setGoals($values['goals']);
+            $matchp->setRedCard($values['redCard']);
+            $matchp->setYellowCard($values['yellowCard']);
+            $matchp->setIsKeeper($values['isKeeper']);
+            if ($values['isKeeper'] && $values['releasedGoals ']) {
+                $matchp->setReleasedGoals($values['isKeeper']);
+            }
+            else {
+                $matchp->setReleasedGoals(0);
+            }
+            $matchp->setMatch($match);
+            $matchp->setTeam($player->getTeam());
+            $matchp->setSeason($match->getSeason());
+            if ($partType == "home") {
+                if ($match->getHomeGoals()) {
+                    $match->setHomeGoals($match->getHomeGoals() + $values['goals']);
+                }
+                else {
+                    $match->setHomeGoals($values['goals']);
+                }
+            }
+            else {
+                if ($match->getVisitorGoals()) {
+                    $match->setVisitorGoals($match->getVisitorGoals() + $values['goals']);
+                }
+                else {
+                    $match->setVisitorGoals($values['goals']);
+                }
+            }
+            
+            $this->em->persist($matchp);
+            $this->em->persist($match);
+            $this->em->flush();
+            return TRUE;
+        } catch (Exception $ex) {
+            return FALSE;
+        }
+    }
 
     public static function sortShooters($a, $b)
     {

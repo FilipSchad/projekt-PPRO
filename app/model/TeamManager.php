@@ -140,21 +140,42 @@ class TeamManager
         usort($statTable, "App\Model\TeamManager::sortTeamOrder");
         return $statTable;
     }
+
+    public function getAddPlayerForm($team)
+    {
+        $form = new UI\Form;
+        $players = $team->getPlayers();
+        $playerArr = array( "" => "");
+        foreach ($players as $player) {
+            $playerArr[$player->getPlayerId()] = $player->getName() . " " . $player->getSurname();
+        }
+        $form->addSelect('player_id', 'Hráč:')
+                ->setItems($playerArr)
+                ->setRequired('Položka je povinná.')
+                ->setAttribute('placeholder', 'Vyber hráče');
+        $form->addInteger('goals', 'Góly:')
+                ->setRequired('Položka je povinná.')
+                ->setAttribute('placeholder', 'Počet vstřelených gólů');
+        $form->addCheckbox('redCard', 'Červená karta');
+        $form->addCheckbox('yellowCard', 'Žlutá karta');
+        $form->addCheckbox('isKeeper', 'Brankář');
+        $form->addInteger('releasedGoals', 'Obdržených gólů');
+        return $form;
+    }
     
     public function getTopFiveForSeason($season)
     {
         return array_slice($this->getStatsTable($season), 0, 5);
     }
 
-
     public static function sortTeamOrder($a, $b)
     {
-    if ($a['points'] == $b['points']) {
-        if ($a['score'] == $b['score']) {
-            return 0;
+        if ($a['points'] == $b['points']) {
+            if ($a['score'] == $b['score']) {
+                return 0;
+            }
+            return ($a['score'] < $b['score']) ? 1 : -1;
         }
-        return ($a['score'] < $b['score']) ? 1 : -1;
-    }
-    return ($a['points'] < $b['points']) ? 1 : -1;
-}
+        return ($a['points'] < $b['points']) ? 1 : -1;
+    }   
 }

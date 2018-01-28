@@ -39,7 +39,10 @@ $(document).ready(function(){
                 <td>{$match->getHome()->getTeamName()}</td>
                 <td>{$match->getVisitor()->getTeamName()}</td>
                 <td>{$match->getRound()}</td>
-                <td>{$match->getHomeGoals()} : {$match->getVisitorGoals()}</td>
+                <td>{if !$match->getHomeGoals()}0{else}{$match->getHomeGoals()}{/if} 
+                    :
+                    {if !$match->getVisitorGoals()}0{else}{$match->getVisitorGoals()}{/if}
+                </td>
                 <td>{$match->getArbiter()->getName()} {$match->getArbiter()->getSurname()}</td>
                 <td>{$match->getMatchDate()->format('d. m. Y')}</td>
                 <td>{$match->getPlayground()->getPlaygroundName()}</td>

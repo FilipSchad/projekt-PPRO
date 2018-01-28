@@ -75,7 +75,7 @@ class PlayerManager
         $form->addText('postcode', 'PSČ:')
                 ->setRequired('Položka je povinná.')
                 ->setAttribute('placeholder', 'PSČ');
-        $form->addText('email', 'Email:')
+        $form->addEmail('email', 'Email:')
                 ->setRequired('Položka je povinná.')
                 ->setAttribute('placeholder', 'Email');
         $form->addText('phone', 'Telefon:')
