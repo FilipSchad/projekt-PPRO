@@ -17,6 +17,7 @@ $(document).ready(function(){
     Content of playground page
 -->
 <!-- *******************CONTENT*********************** -->
+{if $user->isLoggedIn()}
 {if isset($createPlayground)}
     <h1>Nové hřiště:</h1>
     <div id="playerDetail">
@@ -35,7 +36,7 @@ $(document).ready(function(){
     </div>
 {/if}
 {/if}
-
+{/if}
 <h1>Hřiště</h1>
 <table id="playground_table" class="display compact js_table">
     <thead>

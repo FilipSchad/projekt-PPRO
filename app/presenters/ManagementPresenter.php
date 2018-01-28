@@ -92,7 +92,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         
         $form = $playerMan->getPlayerForm();
         $form->addText('registration_date', 'Datum registrace:')
-                ->setValue($selectedPlayer->getRegistrationDate()->format('d. m. Y'))
+                ->setValue($selectedPlayer->getRegistrationDate()->format('d.m.Y'))
                 ->setAttribute('readonly');
         $form->addSubmit('save_team', 'Uložit')
                 ->setAttribute('id', 'saveButton')
@@ -100,7 +100,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $form->onSuccess[] = [$this, 'editPlayerFormSucceeded'];
         $form->getComponent('name')->setValue($selectedPlayer->getName());
         $form->getComponent('surname')->setValue($selectedPlayer->getSurname());
-        $form->getComponent('birthdate')->setValue($selectedPlayer->getBirthDate()->format('d. m. Y'));
+        $form->getComponent('birthdate')->setValue($selectedPlayer->getBirthDate()->format('d.m.Y'));
         $form->getComponent('address')->setValue($selectedPlayer->getAddress());
         $form->getComponent('city')->setValue($selectedPlayer->getCity());
         $form->getComponent('postcode')->setValue($selectedPlayer->getPostcode());
@@ -269,7 +269,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
     public function createPaymentFormSucceeded($form)
     {
         $payMan = new PaymentManager($this->EntityManager);
-        if($payMan->createOrUpdatePaymentFromForm($form)) {
+        if($payMan->createOrUpdatePaymentFromForm($form, 0)) {
             $this->flashMessage('Platba byla úspěšně vytvořena.', 'info');  
             $this->redirect('Management:payment');
         }
@@ -289,8 +289,8 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $form->getComponent('player_id')->setValue($selectedPayment->getPlayer()->getPlayerId());
         $form->getComponent('purpose')->setValue($selectedPayment->getPurpose());
         $form->getComponent('sum')->setValue($selectedPayment->getSum());
-        $form->getComponent('dueDate')->setValue($selectedPayment->getDueDate()->format('d.m.Y'));
-        $form->getComponent('payedOn')->setValue($selectedPayment->getPayedOn()->format('d.m.Y'));
+        $form->getComponent('dueDate')->setValue($selectedPayment->getDueDate()->format('Y-m-d'));
+        $form->getComponent('payedOn')->setValue($selectedPayment->getPayedOn()->format('Y-m-d'));
         $form->getComponent('variableSymbol')->setValue($selectedPayment->getVariableSymbol());
         $form->getComponent('season_id')->setValue($selectedPayment->getSeason()->getSeasonId());
         
@@ -475,7 +475,7 @@ class ManagementPresenter extends Nette\Application\UI\Presenter
         $form->getComponent('round')->setValue($selectedMatch->getRound());
         $form->getComponent('arbiter_id')->setValue($selectedMatch->getArbiter()->getArbiterId());
         $form->getComponent('playground_id')->setValue($selectedMatch->getPlayground()->getPlaygroundId());
-        $form->getComponent('matchdate')->setValue($selectedMatch->getMatchDate()->format('d. m. Y'));
+        $form->getComponent('matchdate')->setValue($selectedMatch->getMatchDate()->format('d.m.Y'));
         $form->getComponent('played')->setValue($selectedMatch->getPlayed());
         $form->onSuccess[] = [$this, 'editMatchFormSucceeded'];
         return $form;

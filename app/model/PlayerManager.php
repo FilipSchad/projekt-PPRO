@@ -39,7 +39,8 @@ class PlayerManager
     public function registerPlayer($values)
     {
         $newPlayer = new Player;
-        $newPlayer->setTeamId($values['team_id']);
+        $teamMan = new TeamManager($this->em);
+        $newPlayer->setTeam($teamMan->getTeamById($values['team_id']));
         $newPlayer->setRegistrationDate(new \DateTime("now"));
         $newPlayer->setName($values['name']);
         $newPlayer->setSurname($values['surname']);

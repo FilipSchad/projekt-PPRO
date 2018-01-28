@@ -68,7 +68,7 @@ class TeamPresenter extends Nette\Application\UI\Presenter
         $form->addSubmit('save_team', 'Uložit')
                 ->setAttribute('id', 'saveButton')
                 ->setAttribute('style', 'float:left;border:0;width:197px;');
-        //$form->onSuccess[] = [$this, 'editTeamFormSucceeded'];
+        $form->onSuccess[] = [$this, 'editTeamFormSucceeded'];
         $form->getComponent('team_name')->setValue($selectedTeam->getTeamName());
         $form->getComponent('owner_name')->setValue($selectedTeam->getOwnerName());
         $form->getComponent('owner_surname')->setValue($selectedTeam->getOwnerSurname());

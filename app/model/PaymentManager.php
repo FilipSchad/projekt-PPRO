@@ -101,7 +101,7 @@ class PaymentManager
             $player = $playerMan->getPlayerById($values['player_id']);
             $season = $seasonMan->getSeasonById($values['season_id']);
             $payment->setPlayer($player);
-            if ($values['team_id']) {
+            if (isset($values['team_id'])) {
                 $teamMan = new TeamManager($this->em);
                 $payment->setTeam($teamMan->getTeamById($values['team_id']));
             }
